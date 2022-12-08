@@ -3,18 +3,18 @@
 
 
 * Asset  
- * Dotween  
-* Odin  
-* DgDataBase  
+   * Dotween  
+  * Odin  
+  * DgDataBase  
 
 
 
 * Lib  
-* Singelton  
-* UiManager  
-* SceneManager  
-* SoundManager  
-* GpgsManager  
-* GoogleSheetManager  
-* Utility
+  * Singelton  
+  * UiManager  
+  * SceneManager  
+  * SoundManager  
+  * GpgsManager  
+  * GoogleSheetManager  
+  * Utility
 
