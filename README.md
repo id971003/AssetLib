@@ -25,5 +25,5 @@
 Abstract이용해서 추상클레스임
 
 SINGLETONE.SINGLETONEType 의 값 변경으로 DONTDESTROY 설정가능
-*SINGLETONE.SINGLETONEType.DontDestroy : 해당오브젝트 지우지 않고 계속사용 dontdestroy 설정 awake 대신 init 메서드 오버라이팅해 이용해야함
-*SINGLETONE.SINGLETONEType.DoNotDontDestroy : dontdestroy 사용안함
+* SINGLETONE.SINGLETONEType.DontDestroy : 해당오브젝트 지우지 않고 계속사용 dontdestroy 설정 awake 대신 init 메서드 오버라이팅해 이용해야함
+* SINGLETONE.SINGLETONEType.DoNotDontDestroy : dontdestroy 사용안함
