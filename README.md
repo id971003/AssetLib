@@ -23,7 +23,7 @@
 
 ## Singleton
 #### 조건 
-[odin 이용가능 > MonoBehaviour 대신 SerializedMonoBehaviour 상속받으면됨
+[odin 이용가능 > MonoBehaviour 대신 SerializedMonoBehaviour 상속받으면됨]
 
 싱글롯 템플릿으로 상속 받아 이용하게함  
 Abstract이용해서 추상클레스임
