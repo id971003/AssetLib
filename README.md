@@ -41,8 +41,7 @@ SINGLETONE.SINGLETONEType 의 값 변경으로 DONTDESTROY 설정가능
 X
 
 Canvas 해상도 고정하는 친구임  
-setWidth 랑 setHeight 설정해주면 나머지 레터박스 처리됨 [레터박스 색은 LetterboxColor 필드값 변경]
-가로행 기준으로 고정됨
+setWidth 랑 setHeight 설정해주면 나머지 레터박스 처리됨 [레터박스 색은 LetterboxColor 필드값 변경] 가로행 기준으로 고정됨  
 Canvas Scaler 의 UiScaleMode 는 Scale With ScreenSize 로 변경됨, Screen Math Mode 는 Expand 로 변경됨  
 
 
