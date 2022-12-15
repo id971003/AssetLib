@@ -46,6 +46,14 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
 
     protected override void Init()
     {
+        if (instance)
+        {
+            DestroyImmediate(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
         //init bgm
         
         //audiosource생성
