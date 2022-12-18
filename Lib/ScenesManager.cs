@@ -5,15 +5,14 @@
   SINGLETONE , DoTween 
   MoveScene_Delay 이용할꺼면
   ISceneLisenter 상속
-  ISceneLisenter 상속 받은 친구들보다 ScenesManager 가 늦게 시작해야함
   
 
   MoveScene_Direct : 즉시 씬 넘겨버림
   MoveScene_Loding
   (A>B Scene 으로 넘어과는과정)
   1. Event_MoveSceneStart : 이동시작
-  3. Event_SceneSetUpEnd : 우리 셋업 끝났음 로딩창치워두됨
-  5. Event_LodingFaddedEnd :  로딩창 다치움 게임시작
+  2. Event_SceneSetUpEnd : 우리 셋업 끝났음 로딩창치워두됨
+  3. Event_LodingFaddedEnd :  로딩창 다치움 게임시작
   
   로딩창 설정해줘야함
   
@@ -47,8 +46,7 @@ public enum EVENT_SCENE
 
 public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.DontDestroy>, ISceneLisenter
 {
-    
-    
+
     public void OnSceneEvent(EVENT_SCENE eventType, Component sender, float param = 0)
     {
         if (eventType.Equals(EVENT_SCENE.MoveSceneStart))
@@ -67,76 +65,94 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
     [SerializeField] private Dictionary<EVENT_SCENE, List<ISceneLisenter>> Dic_Listeners = new Dictionary<EVENT_SCENE, List<ISceneLisenter>>();
 
     [SerializeField] private bool b_SceneSetUpEnd;
-    
 
-    protected override void Init()
+    void Awake()
     {
-        if (instance)
-        {
-            DestroyImmediate(gameObject);
-            return;
-        }
-
-        instance = this;
-        DontDestroyOnLoad(gameObject);
-        
+        base.Awake();
         EventScene_AddListenerAll(this);
         Go_LodingPanel.gameObject.SetActive(false);
-        
+
     }
 
     
     #region 로딩창이동
 
+
+
+    
+    /// <summary>
+    /// 1. MoveScene_Loding
+    ///     로딩시작
+    ///     모든코루틴정지
+    ///     EVENT_SCENE.MoveSceneStart 넘김
+    ///     faddedon 실행
+    /// 2. FaddedOn
+    ///     
+    /// 3. C_MoveScene_Loding
+    /// 4. FaddedOff
+    ///
+    /// 
+    /// 
+    /// </summary>
     [SerializeField] private RectTransform Go_LodingPanel;
     [SerializeField] private Image Image_Lodingbar;
     private readonly Vector2 Vector2_LodingBar_GoToPosition = new Vector2(0, 1080);
-    private const float LodingPanelMoveTIme=2;
-    private const float LodingBarDelayTime = 2;
-    public void MoveScene_Loding(string sceneName)
+    private readonly float LodingPanelMoveTIme=2;
+    private readonly float LodingBarDelayTime = 2;
+    public void MoveScene_Loding(string sceneName) //시작
     {
         StopAllCoroutines();
         EventPost(EVENT_SCENE.MoveSceneStart, this);
         FaddedOn(sceneName);
         
     }
-    IEnumerator C_MoveScene_Loding(string sceneName)
+    IEnumerator C_MoveScene_Loding(string sceneName)//비동기 씬이동시작
     {
         AsyncOperation op =  SceneManager.LoadSceneAsync(sceneName);
         op.allowSceneActivation = false; // 바로 씬 넘어가지 않게금 설정
         float time = 0;
-        while (!op.isDone) //로딩 완료 되지 않을경우 계속 반복
+        while (!op.isDone) //로딩 완료 되지 않을경우 계속 반복 
         {
-            Image_Lodingbar.fillAmount = op.progress;
+            Image_Lodingbar.fillAmount = op.progress; //lodingbar에 process전달
             yield return null;
-            if (op.progress >= 0.9f) // 씬이동은끝남 
+            if (op.progress >= 0.9f) // 씬이동은끝남  
             {
-                op.allowSceneActivation = true;
-                Image_Lodingbar.fillAmount = 0.9f;
+                op.allowSceneActivation = true; //씬이동시키고
+                Image_Lodingbar.fillAmount = 0.9f;  //lodingbar 0.9로고정
                 break;
             }
 
         }
-        yield return new WaitUntil(() => b_SceneSetUpEnd); //이동씬 쌧업 기다림
-        Image_Lodingbar.DOFillAmount(1, LodingBarDelayTime);
-        yield return new WaitForSeconds(LodingBarDelayTime);
-        FaddedOff();
+        yield return new WaitUntil(() => b_SceneSetUpEnd); //이동씬 쌧업 기다림 //이동씬에서 쎗업이끝나면
+        Image_Lodingbar.DOFillAmount(1, LodingBarDelayTime); // 로딩바 끝까지채움
+        yield return new WaitForSeconds(LodingBarDelayTime); //이후 다채워지면
+        FaddedOff(); //faddedoff
         
     }
-
+    
+    /// <summary>
+    /// 로딩창을 어디서 어디론가로 이동시킴 
+    /// </summary>
     void FaddedOn(string name)
     {
-        Go_LodingPanel.anchoredPosition = Vector2_LodingBar_GoToPosition;
-        Go_LodingPanel.gameObject.SetActive(true);
-        Image_Lodingbar.fillAmount = 0;
+        Go_LodingPanel.anchoredPosition = Vector2_LodingBar_GoToPosition; //로딩씬 초기위치
+        Go_LodingPanel.gameObject.SetActive(true); //킴
+        Image_Lodingbar.fillAmount = 0; //로딩바 fill 값 끔
         Sequence mySequence = DOTween.Sequence();
-        mySequence.Append(Go_LodingPanel.DOMoveY(Vector2_LodingBar_GoToPosition.y/2, LodingPanelMoveTIme))
+        mySequence.Append(Go_LodingPanel.DOMoveY(Vector2_LodingBar_GoToPosition.y/2, LodingPanelMoveTIme))  //로딩씬 이동시키고
             .AppendCallback(() =>
             {
-                StartCoroutine(C_MoveScene_Loding(name));
+                StartCoroutine(C_MoveScene_Loding(name)); // 로딩시작
             });
     }
-    void FaddedOff()
+    /// <summary>
+    /// 씬이동 끝나고 로딩씬 지우기
+    /// 1. 로딩씬 을 옮김
+    /// 2. Event_LodingFaddedEnd 호출
+    /// 3. 로딩바지움
+    /// 
+    /// </summary>
+    void FaddedOff() 
     {
         Sequence mySequence = DOTween.Sequence();
         mySequence.Append(Go_LodingPanel.DOMoveY(Vector2_LodingBar_GoToPosition.y*2, LodingPanelMoveTIme))

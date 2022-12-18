@@ -1,19 +1,20 @@
-///sound관리하는 manager임
-///Singleton 사용함 [DOTWEEN,ODIN]
-///Resource Path설정
-///Bgm 은 그냥 넣으면됨
-/// Ef 는 이름이 key 이고 파일ㅇ ㅣ름 마지막에 몇개 설정할지 넣으면됨
-/// Ef
-///     SoundPlay_Ef :  ef 재생 , 볼륨 루핑 설정가능
-///     SoundPlay_Ef_Decrease : ef 중첩소리 작아지게 재생 , 초기소리 점점 작아지는정도 [0.9(10%씩작아짐)] , 최소값 설정가능
-/// Bgm
-///     SoundPlay_Bgm_Direct : 바로재생
-///     SoundPlay_Bgm_Increaas : 점점 커지면서 재생 , 시작볼륨, 끝볼륨 , 끝까지 올라가는 시간 조절가능
-/// Stop
-///     StopAllSource_Direct : 모든소리 즉시 정지
-///     StopBgm_Direct : 배경음만 즉시정지
-///     StopEf_Direct : 해당 이팩트 즉시정지
-///     StopBgm_Decrease : 배경음 점점 정지 , 몇초동안
+/*sound관리하는 manager임
+Singleton 사용함 [DOTWEEN,ODIN]
+Resource Path설정
+Bgm 은 그냥 넣으면됨
+ Ef 는 이름이 key 이고 파일ㅇ ㅣ름 마지막에 몇개 설정할지 넣으면됨
+ Ef
+     SoundPlay_Ef :  ef 재생 , 볼륨 루핑 설정가능
+     SoundPlay_Ef_Decrease : ef 중첩소리 작아지게 재생 , 초기소리 점점 작아지는정도 [0.9(10%씩작아짐)] , 최소값 설정가능
+ Bgm
+     SoundPlay_Bgm_Direct : 바로재생
+     SoundPlay_Bgm_Increaas : 점점 커지면서 재생 , 시작볼륨, 끝볼륨 , 끝까지 올라가는 시간 조절가능
+ Stop
+     StopAllSource_Direct : 모든소리 즉시 정지
+     StopBgm_Direct : 배경음만 즉시정지
+     StopEf_Direct : 해당 이팩트 즉시정지
+     StopBgm_Decrease : 배경음 점점 정지 , 몇초동안
+     */
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,22 +40,13 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
      
      
      public List<AudioSource> ListAudioSource_All;
-    
-
-    
 
 
-    protected override void Init()
-    {
-        if (instance)
-        {
-            DestroyImmediate(gameObject);
-            return;
-        }
 
-        instance = this;
-        DontDestroyOnLoad(gameObject);
-        //init bgm
+     void Awake()
+     {
+         base.Awake();
+                 //init bgm
         
         //audiosource생성
         GameObject goAudioSourceBgm = new GameObject("AudioSrouce_Bgm");
@@ -102,7 +94,8 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
             }
             Dic_EfListAudioSource_NameToList.Add(clipname,listaudiosource);
         }
-    }
+     }
+
 
 
     #region  bgm

@@ -1,12 +1,11 @@
 /*
- * 싱글톤 이다
- * 
- * ex public class kk : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
- *
- * 끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자 
- * 한개만 존재하고싶으면 Init 에 해당 주석처리된 dontdestroy 를 적용한다
- * Dontdestroy 로 할시 awake 대신 init 으로 초기화하자
- * 
+  싱글톤 이다
+  
+  ex public class kk : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
+ 
+  끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자 
+  Awake 에 base.Awake 넣어주자
+  
  */
 
 using SINGLETONE;
@@ -45,7 +44,7 @@ namespace SINGLETONE
     }
 }
 
-public abstract class SINGLETON<T,SINGLETONTYPE> : SerializedMonoBehaviour//MonoBehaviour  오딘안쓸꺼면 모노 쓰셈
+public class SINGLETON<T,SINGLETONTYPE> : SerializedMonoBehaviour//MonoBehaviour  오딘안쓸꺼면 모노 쓰셈
     where T : MonoBehaviour
     where  SINGLETONTYPE : SINGLETONE.ISingletone_type
 {
@@ -70,27 +69,21 @@ public abstract class SINGLETON<T,SINGLETONTYPE> : SerializedMonoBehaviour//Mono
 
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         if (_singletoneType.Get_SingletoneType() == SINGLETONE_TYPE.DONTDESTROY)
         {
-            Init();
-        }
-    }
+            if (instance)
+            {
+                DestroyImmediate(gameObject);
+                return;
+            }
 
-    protected abstract void Init();
-    /*
-    protected override void Init()
-    {
-        if (instance)
-        {
-            DestroyImmediate(gameObject);
-            return;
+            instance = this as T;
+            DontDestroyOnLoad(gameObject);
         }
 
-        instance = this;
-        DontDestroyOnLoad(gameObject);
     }
-     */
+    
 
 }
