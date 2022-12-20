@@ -1,13 +1,9 @@
-/*
-  싱글톤 이다
-  
-  ex public class kk : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
- 
-  끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자 
-  Awake 에 base.Awake 넣어주자
-  
- */
-
+/// </summary>
+//싱글톤 이다
+//ex public class kk : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
+//끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자
+//Awake 에 base.Awake 넣어주자
+/// </summary>
 using SINGLETONE;
 using Sirenix.OdinInspector;
 using UnityEngine;

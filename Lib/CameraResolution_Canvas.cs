@@ -1,8 +1,9 @@
-﻿//Canvers해상도 고정하는친구임
+﻿/// </summary>
+//Canvers해상도 고정하는친구임
 //Scale With Screen Size 로 변경후 Reference Resolution 을 setWhith 랑 setHeight 로 맞춘다
 //가로기준으로 해상도 맞추고 색변경함
-using System.Collections;
-using System.Collections.Generic;
+/// </summary>
+
 using UnityEngine;
 using UnityEngine.UI;
 public class CameraResolution_Canvas : MonoBehaviour
@@ -24,8 +25,9 @@ public class CameraResolution_Canvas : MonoBehaviour
         else
             Debug.LogError("CameraResoulution error : Canvers에 부착하십시오");
     }
-
-    /* 해상도 설정하는 함수 */
+    /// <summary>
+    /// 해상도 설정하는 함수
+    /// </summary>
     public void SetResolution()
     {
 
@@ -45,6 +47,9 @@ public class CameraResolution_Canvas : MonoBehaviour
             Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
         }
     }
+    /// <summary>
+    /// 레터박스 설정
+    /// </summary>
     void OnPreCull() => GL.Clear(true, true, LetterboxColor);
 }
 

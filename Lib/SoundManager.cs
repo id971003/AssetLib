@@ -1,27 +1,25 @@
-/*sound관리하는 manager임
-Singleton 사용함 [DOTWEEN,ODIN]
-Resource Path설정
-Bgm 은 그냥 넣으면됨
- Ef 는 이름이 key 이고 파일ㅇ ㅣ름 마지막에 몇개 설정할지 넣으면됨
- Ef
-     SoundPlay_Ef :  ef 재생 , 볼륨 루핑 설정가능
-     SoundPlay_Ef_Decrease : ef 중첩소리 작아지게 재생 , 초기소리 점점 작아지는정도 [0.9(10%씩작아짐)] , 최소값 설정가능
- Bgm
-     SoundPlay_Bgm_Direct : 바로재생
-     SoundPlay_Bgm_Increaas : 점점 커지면서 재생 , 시작볼륨, 끝볼륨 , 끝까지 올라가는 시간 조절가능
- Stop
-     StopAllSource_Direct : 모든소리 즉시 정지
-     StopBgm_Direct : 배경음만 즉시정지
-     StopEf_Direct : 해당 이팩트 즉시정지
-     StopBgm_Decrease : 배경음 점점 정지 , 몇초동안
-     */
+/// </summary>
+//sound관리하는 manager임
+//Singleton 사용함 [DOTWEEN,ODIN]
+//Resource Path설정
+//Bgm 은 그냥 넣으면됨
+//Ef 는 이름이 key 이고 파일이름 마지막에 몇개 설정할지 넣으면됨
+// Ef
+//     SoundPlay_Ef :  ef 재생 , 볼륨 루핑 설정가능
+//     SoundPlay_Ef_Decrease : ef 중첩소리 작아지게 재생 , 초기소리 점점 작아지는정도 [0.9(10%씩작아짐)] , 최소값 설정가능
+// Bgm
+//     SoundPlay_Bgm_Direct : 바로재생
+//     SoundPlay_Bgm_Increaas : 점점 커지면서 재생 , 시작볼륨, 끝볼륨 , 끝까지 올라가는 시간 조절가능
+// Stop
+//     StopAllSource_Direct : 모든소리 즉시 정지
+//     StopBgm_Direct : 배경음만 즉시정지
+//     StopEf_Direct : 해당 이팩트 즉시정지
+//     StopBgm_Decrease : 배경음 점점 정지 , 몇초동안
+/// </summary>
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 using System.Linq;
-using System.IO;
-using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using DG.Tweening;
 
@@ -33,21 +31,18 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
     [SerializeField] private AudioSource AudioSource_Bgm;
     [SerializeField] private Dictionary<string, AudioClip> Dic_BgmAudioClip_NameToList=new Dictionary<string, AudioClip>();
     //Ef
+    [SerializeField] private Dictionary<string, List<AudioSource>> Dic_EfListAudioSource_NameToList=new Dictionary<string, List<AudioSource>>();
     
-     [SerializeField] private Dictionary<string, List<AudioSource>> Dic_EfListAudioSource_NameToList=new Dictionary<string, List<AudioSource>>();
-     
-     
-     
-     
-     public List<AudioSource> ListAudioSource_All;
+    
+    public List<AudioSource> ListAudioSource_All;
 
 
 
-     void Awake()
+    protected override void Awake()
      {
-         base.Awake();
-                 //init bgm
-        
+         base.Awake();//안꺼지게하는거임
+                 
+         //init bgm
         //audiosource생성
         GameObject goAudioSourceBgm = new GameObject("AudioSrouce_Bgm");
         goAudioSourceBgm.transform.parent = gameObject.transform;
@@ -97,7 +92,11 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
      }
 
 
-
+    /// <summary>
+    /// bgm 재생 바로
+    /// </summary>
+    /// <param name="soundName"></param> 트랙이름
+    /// <param name="startVolum"></param> 시작볼륨
     #region  bgm
     public void SoundPlay_Bgm_Direct(string soundName, float startVolum)
     {
@@ -107,8 +106,14 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
         AudioSource_Bgm.clip = Dic_BgmAudioClip_NameToList[soundName];
         AudioSource_Bgm.volume = startVolum;
         AudioSource_Bgm.Play();
-    } //bgm 재생 바로
-
+    } 
+    /// <summary>
+    /// bgm 재생 점점 커지게
+    /// </summary>
+    /// <param name="soundName"></param> 트랙이름
+    /// <param name="startVolum"></param> 시작볼륨
+    /// <param name="lastVolum"></param> 끝날때볼륨
+    /// <param name="duringTime"></param> 몇초동안?
     public void SoundPlay_Bgm_Increaas(string soundName, float startVolum, float lastVolum, float duringTime)
     {
         if(!Dic_BgmAudioClip_NameToList.ContainsKey(soundName))
@@ -120,12 +125,18 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
         AudioSource_Bgm.volume = startVolum;
         AudioSource_Bgm.Play();
         AudioSource_Bgm.DOFade(lastVolum, duringTime);
-    } //bgm 재생 점점 커지게
+    } //
     
 
     #endregion
 
     #region Ef
+    /// <summary>
+    /// ef 재생
+    /// </summary>
+    /// <param name="soundName"></param> 트랙이름
+    /// <param name="startVolume"></param> 시작볼륨
+    /// <param name="loop"></param> 반복할꺼임?
     public void SoundPlay_Ef(string soundName, float startVolume = 1, bool loop=false)
     {
         Debug.Log(soundName);
@@ -134,9 +145,15 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
             return;
         audioSource.volume = startVolume;
         audioSource.Play();
-    } //ef 재생
-
-    public void SoundPlay_Ef_Decrease(string soundName, float startVolum, float decraseVolume, float minvolume) //재생중인 소리가 많을수록 중첩될수록 점점 소리가 작아짐
+    } 
+    /// <summary>
+    /// ef 재생중인 소리가 많을수록 중첩될수록 점점 소리가 작아짐
+    /// </summary>
+    /// <param name="soundName"></param> 사운드이름
+    /// <param name="startVolum"></param> 시작볼륨
+    /// <param name="decraseVolume"></param> 중복시 작아지는 값 ex) 0.9f ,0.8f
+    /// <param name="minvolume"></param> 최소볼륨
+    public void SoundPlay_Ef_Decrease(string soundName, float startVolum, float decraseVolume, float minvolume) 
     {
         AudioSource audioSource = Dic_ReturnAudioClip_Ef(soundName);
         if (audioSource == null)
@@ -154,24 +171,38 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
     #endregion
 
     #region 정지
-
-    public void StopAllSource_Direct() //모두다정지 즉시
+    /// <summary>
+    /// 모두다정지 즉시
+    /// </summary>
+    public void StopAllSource_Direct() 
     {
         for(int i=0;i<ListAudioSource_All.Count;i++)
             ListAudioSource_All[i].Stop();
     }
-    public void StopBgm_Direct() //배경음 즉시정지
+    /// <summary>
+    /// 배경음 즉시정지
+    /// </summary>
+    public void StopBgm_Direct() 
     {
         AudioSource_Bgm.Stop();
     }
-    public void StopAllSource_Increase(float time) //모두다정지 천천히
+    /// <summary>
+    /// 모두다정지 천천히
+    /// </summary>
+    /// <param name="during"></param> 몇초동안
+    /// <param name="after"></param> 다음동작
+    public void StopAllSource_Increase(float during,Action after=null) 
     {
         for (int i = 0; i < ListAudioSource_All.Count; i++)
-            DoFadeAndStop(ListAudioSource_All[i], time);
+            DoFadeAndStop(ListAudioSource_All[i], during,after);
     }
 
 
-    public void StopEf_Direct(string soundName) //해당 이팩트 정지 
+    /// <summary>
+    /// 해당 이팩트 정지
+    /// </summary>
+    /// <param name="soundName"></param> 트랙이름
+    public void StopEf_Direct(string soundName) 
     {
         if(!Dic_EfListAudioSource_NameToList.ContainsKey(soundName))
             Debug.LogError("SoundManagerError - key 없음"+soundName);
@@ -181,16 +212,25 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
     }
 
 
-
-    public void StopBgm_Decrease(float time,Action after) //배경음 점점정지
+    /// <summary>
+    /// 배경음 점점정지
+    /// </summary>
+    /// <param name="druing"></param> 몇초동안?
+    /// <param name="after"></param> 다음동작
+    public void StopBgm_Decrease(float druing,Action after) //
     {
-        DoFadeAndStop(AudioSource_Bgm, time, after);
+        DoFadeAndStop(AudioSource_Bgm, druing, after);
     }
     
 
     #endregion
 
     #region Etc
+    /// <summary>
+    /// ef  dic 에서 재생중이지 않은 트랙 리턴
+    /// </summary>
+    /// <param name="soundName"></param> 트랙이름
+    /// <returns></returns>
     AudioSource Dic_ReturnAudioClip_Ef(string soundName) 
     {
         if(!Dic_EfListAudioSource_NameToList.ContainsKey(soundName))
@@ -204,7 +244,12 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
 
         return null; //전부다 실행 중이라는 뜻임 무시하고 넘어감
     }//오디오찾기
-    int ReturnPlay_AudiosourceCount_Ef(string soundName) //ef 중 몇개가 재생중인가 확인 decrease 에서 적용함
+    /// <summary>
+    /// ef 중 몇개가 재생중인가 확인
+    /// </summary>
+    /// <param name="soundName"></param> 트랙이름
+    /// <returns></returns>
+    int ReturnPlay_AudiosourceCount_Ef(string soundName) //
     {
         int a = 0;
         if(!Dic_EfListAudioSource_NameToList.ContainsKey(soundName))
@@ -217,7 +262,12 @@ public class SoundManager : SINGLETON<SoundManager,SINGLETONE.SINGLETONEType.Don
 
         return a;
     }
-    
+    /// <summary>
+    /// 닷트윈 확장 메서드 소리점점 작아지고 이후 멈추게 
+    /// </summary>
+    /// <param name="targetAudioSource"></param>
+    /// <param name="durTime"></param>
+    /// <param name="after"></param>
     void DoFadeAndStop(AudioSource targetAudioSource, float durTime,Action after=null)
     {
         Sequence Seq_FadeAndStop = DOTween.Sequence()
