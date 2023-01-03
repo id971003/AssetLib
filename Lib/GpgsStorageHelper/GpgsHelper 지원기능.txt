@@ -1,0 +1,18 @@
+라이브러리 에서 지원하는 기능
+
+1. 로그인  : gpgs 에 로그인하는 기능
+	1.1 : SimpleLogin(가칭) : 아무 조건 없이(라이브러리레벨에서) 로그인하기
+	1.2 : DeviceCheckLogin(가칭) : SavedGame[DeviceId] 확인한후 로그인하기
+		1.2.1 DeviceCheckLogin 과정에서 SavedGame[DeviceId] 가 없을경우 게임 SavedGame[DeviceId] 등록
+		1.2.2 DeviceCheckLogin 과정에서 SavedGame[DeviceId] 와 기기의 Id 가 다를경우 
+			1.2.2.1 게임 종료
+			1.2.2.2 DeviceCheckLogin 과정에서 SavedGame[GameData] 의 최근 저장시간이 24시간이 경과 됬을경우 SavedGame[DeviceId] 자동 초기화 
+			
+
+
+2. Save,Load : 데이터 저장, 로드 하는기능
+	1.1 LocalSave,Load : 아무 조건 없이(라이브러리레벨에서) 로컬에 데이터 저장,로드
+	1.2 CloudSave,Load : 아무 조건 없이(라이브러리레벨에서) gpgs 에 데이터 저장,로드
+	
+3. DeviceIdReset : 로그인 상태에서 gpgs SavedGame[DeviceId] 를 초기화하고 게임을 종료하는기능
+

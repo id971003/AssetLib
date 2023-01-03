@@ -1,0 +1,12 @@
+1. StorageHelper 
+  1. Local
+    1.1 Save: LocalStorageHelper.SaveLocalStorage
+    1.2 Load: LocalStorageHelper.LoadLocalStorage
+    
+  2. Clouad
+    1.1 Save: CloudStorageHelper.SaveData
+      1.1.1 gpgsHelper.SaveGame
+      1.1.2 +a
+    1.2 Load: CloudStorageHelper.LoadData
+      1.2.1 GpgsHelper.LoadGame
+      1.1.2 +a
