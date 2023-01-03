@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using System;
 
+
+
 public static class Utility 
 {
 
@@ -71,12 +73,11 @@ public static class Utility
         "b",
         "c",
         "d"
-
     };
 
     private static readonly int devicevAlue = 3;
     private static readonly float  powv= Mathf.Pow(10, devicevAlue);
-    public static string DoubleToString(this double value)
+    public static string DoubleToString(this double value) //꼬리 2개
     {
         if (value <= powv)
         {
@@ -91,21 +92,18 @@ public static class Utility
             {
                 break;
             }
-            else
+
+            count++;
+            a *= powv;
+            if (count - 1 > Unit.Length)
             {
-                
-                count++;
-                a *= powv;
-                if (count - 1 > Unit.Length)
-                {
-                    
-                    count--;
-                    a /= powv;
-                    return Math.Truncate((value / (a / powv))*100)/100 + Unit[count - 2];
-                }
+                count--;
+                a /= powv;
+                return Math.Truncate((value / (a / powv)) * 100) / 100 + Unit[count - 2];
             }
         }
-        return Math.Truncate((value / (a / powv))*100)/100+Unit[count-2];
+
+        return Math.Truncate((value / (a / powv)) * 100) / 100 + Unit[count - 2];
     }
 
 

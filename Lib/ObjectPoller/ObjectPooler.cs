@@ -16,8 +16,8 @@ using Unity.Mathematics;
 public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.DontDestroy>
 {
     private string filePath=@"Assets\Scripte\Lib\ObjectPoller\OBJECTPOOL.cs";
-    private string message = "namespace OBJECTPOOL { public enum ObjectPool {";
-    private string message2 = "}}\n";
+    private readonly string message = "namespace OBJECTPOOL { public enum ObjectPool {";
+    private readonly string message2 = "}}\n";
 
     private string PrefabPath = "ObjectPool";
 
@@ -32,8 +32,8 @@ public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.Don
         Init_Object();
     }
     void Init_EnumType()
-    {        FileStream fileStream
-            = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
+    {        
+        FileStream fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
 
         StreamWriter writer = new StreamWriter(fileStream, System.Text.Encoding.Unicode);
 

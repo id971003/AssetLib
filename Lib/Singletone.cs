@@ -8,6 +8,9 @@ using SINGLETONE;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+
+
+
 namespace SINGLETONE
 {
     public enum SINGLETONE_TYPE
@@ -44,6 +47,7 @@ public class SINGLETON<T,SINGLETONTYPE> : SerializedMonoBehaviour//MonoBehaviour
     where T : MonoBehaviour
     where  SINGLETONTYPE : SINGLETONE.ISingletone_type
 {
+    
     private static SINGLETONTYPE _singletoneType;
     protected static T instance = null;
     public static T Instance

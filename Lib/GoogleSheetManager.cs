@@ -38,6 +38,7 @@ public class GoogleSheetManager : SINGLETON<GoogleSheetManager,SINGLETONE.SINGLE
     [SerializeField] GoogleData ProcessGoogleData;
 
 
+    
 
     IEnumerator Post(WWWForm form,Action<bool,string> afterProcess=null) //등록
     {
