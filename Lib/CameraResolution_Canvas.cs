@@ -1,7 +1,11 @@
 ﻿/// </summary>
+/// maid 7rzr 2023-01-04
 //Canvers해상도 고정하는친구임
+//조건 : 켄버스에 집에넣어야함  
+//세팅 : setwidth[가로],setheight[새로],letterboxcolor[레터박스색]  
 //Scale With Screen Size 로 변경후 Reference Resolution 을 setWhith 랑 setHeight 로 맞춘다
 //가로기준으로 해상도 맞추고 색변경함
+//screenMatchMode 를 Expand 로 변경함
 /// </summary>
 
 using UnityEngine;

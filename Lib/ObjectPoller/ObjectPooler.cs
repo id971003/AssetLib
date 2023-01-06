@@ -25,12 +25,8 @@ public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.Don
     [SerializeField] Dictionary<ObjectPool, GameObject> Dic_NameToPreFab = new Dictionary<ObjectPool, GameObject>();
 
     #region init
+    
     [Button]
-    void Init()
-    {
-        Init_EnumType();
-        Init_Object();
-    }
     void Init_EnumType()
     {        
         FileStream fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
@@ -42,8 +38,9 @@ public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.Don
         GameObject[] poolArray=Resources.LoadAll<GameObject>(PrefabPath);
         for (int i = 0; i < poolArray.Length; i++)
         {
+            int countslide = poolArray[i].name.LastIndexOf('_');
             //enum 생성
-            var prefabName = poolArray[i].name.Substring(0, poolArray[i].name.Length - 1);
+            var prefabName = poolArray[i].name.Substring(0, countslide);
             if (i != 0)
             {
                 Debug.Log(prefabName);
@@ -60,6 +57,8 @@ public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.Don
         writer.Close();
         fileStream.Close();
     }
+        
+    [Button]
     void Init_Object()
     {
         //초기화
@@ -74,9 +73,12 @@ public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.Don
         for (int i = 0; i < poolArray.Length; i++)
         {
             //enum 생성
-            var prefabName = poolArray[i].name.Substring(0, poolArray[i].name.Length - 1);
-            if(!int.TryParse(poolArray[i].name.Substring(poolArray[i].name.Length-1),out int count))
+            int countslide = poolArray[i].name.LastIndexOf('_');
+            //enum 생성
+            var prefabName = poolArray[i].name.Substring(0, countslide);
+            if(!int.TryParse(poolArray[i].name.Substring(countslide+1),out int count))
                 Debug.LogError("ObjectPool_Error : "+prefabName+"LastName Is Not Int");
+            Debug.Log(count);
             ObjectPool OBJECTPOOL = (ObjectPool)Enum.Parse(typeof(ObjectPool), prefabName);
             
             Dic_NameToPreFab.Add(OBJECTPOOL,poolArray[i]);
@@ -200,8 +202,8 @@ public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.Don
     protected override void Awake()
     {
         base.Awake();
-        Init();
-
+        Init_EnumType();
+        Init_Object();
     }
     
 }

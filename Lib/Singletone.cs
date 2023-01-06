@@ -1,8 +1,12 @@
 /// </summary>
-//싱글톤 이다
-//ex public class kk : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
-//끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자
-//Awake 에 base.Awake 넣어주자
+/// MADE 7rzr 2023-01-04
+//싱글톤이다  
+//조건 : Odin, 상속  
+//세팅 : SINGLETONTYPE[Dontdestroy 할껀지 안할껀지]  
+//ex) public class kk : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>  
+//끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자  
+//상속받은친구에 Awake 에 base.Awake 넣어주자  
+//오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨  
 /// </summary>
 using SINGLETONE;
 using Sirenix.OdinInspector;
@@ -71,6 +75,7 @@ public class SINGLETON<T,SINGLETONTYPE> : SerializedMonoBehaviour//MonoBehaviour
 
     protected virtual void Awake()
     {
+        Debug.Log(gameObject.name);
         if (_singletoneType.Get_SingletoneType() == SINGLETONE_TYPE.DONTDESTROY)
         {
             if (instance)
