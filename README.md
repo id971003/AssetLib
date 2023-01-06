@@ -41,7 +41,7 @@ Canvas 해상도 고정하는친구임
 ***
 ## SoundManager
 조건 : odin , singleton , Dotween  
-세팅 : ReSourcePath_Bgm[bgm 파일들 경로], ReSourcePath_Ef[ef 파일들 경로] ,filePath[ENUM타입 저장할위치]
+세팅 : ReSourcePath_Bgm[bgm 파일들 경로], ReSourcePath_Ef[ef 파일들 경로], filePath[ENUM타입 저장할위치]  
 sound 관리하는 manager 임  
 resource사운드파일들 이름들을 ENUM 타입으로 만들어서 ENUM으로 타입으로 사운드 콜가능  
 EF 들의 경우 소리_몇개 설정할지 해줘야함 즉 이름 마지막에 _"몇개설정할지" 해주면됨
