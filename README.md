@@ -14,11 +14,11 @@
   * Singelton  
   * SoundManager
   * ScenesManager  
-  * GpgsStorageHelper
+  * ObjectPooler   
   * GoogleSheetManager  
   * Utility   
   * DatasManager   
-  * ObjectPooler   
+  * GpgsStorageHelper
   
   
 ***
