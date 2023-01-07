@@ -15,9 +15,9 @@
   * SoundManager
   * ScenesManager  
   * ObjectPooler   
-  * GoogleSheetManager  
   * DatasManager   
   * GpgsStorageHelper
+  * GoogleSheetManager  
   * Utility   
   
   
