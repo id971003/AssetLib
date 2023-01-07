@@ -1,3 +1,4 @@
+// MADE 7rzr 2023-01-04
 //ObjectPooler.SpawnFormPool(ObjectPool.a,gameObject.transform.position);
 ///
 /// 자동인잇하는 오브젝트플러
@@ -43,12 +44,10 @@ public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.Don
             var prefabName = poolArray[i].name.Substring(0, countslide);
             if (i != 0)
             {
-                Debug.Log(prefabName);
                 writer.WriteLine(","+ prefabName);
             }
             else
             {
-                Debug.Log(prefabName);
                 writer.WriteLine(prefabName);    
             }
             
@@ -78,7 +77,6 @@ public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.Don
             var prefabName = poolArray[i].name.Substring(0, countslide);
             if(!int.TryParse(poolArray[i].name.Substring(countslide+1),out int count))
                 Debug.LogError("ObjectPool_Error : "+prefabName+"LastName Is Not Int");
-            Debug.Log(count);
             ObjectPool OBJECTPOOL = (ObjectPool)Enum.Parse(typeof(ObjectPool), prefabName);
             
             Dic_NameToPreFab.Add(OBJECTPOOL,poolArray[i]);

@@ -1,7 +1,7 @@
-using System.Collections;
+// made 7rzr 2022-1-7
+
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using System;
 
 
@@ -111,7 +111,7 @@ public static class Utility
     #endregion
     #region Time
 
-    public static string Time_MinuteToTime(int minute)
+    public static string Time_MinuteToTime(this int minute)
     {
         if (minute >= 60)
         {
@@ -133,7 +133,7 @@ public static class Utility
                
     }
 
-    public static string Time_SecendToTime(int secend)
+    public static string Time_SecendToTime(this int secend)
     {
         string result="";
         var remainTime = secend % 60;

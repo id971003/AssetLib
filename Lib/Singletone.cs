@@ -75,7 +75,6 @@ public class SINGLETON<T,SINGLETONTYPE> : SerializedMonoBehaviour//MonoBehaviour
 
     protected virtual void Awake()
     {
-        Debug.Log(gameObject.name);
         if (_singletoneType.Get_SingletoneType() == SINGLETONE_TYPE.DONTDESTROY)
         {
             if (instance)

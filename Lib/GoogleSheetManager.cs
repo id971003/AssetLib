@@ -1,15 +1,11 @@
-
-/// 스프레드시트
-/// 링크 받아오기
-/// 1. 링크가있는 모든사용자로 변경
-/// 2.링크 edit 전까지 +exprot?format=tsv
-///
-/// googlesheetapp set
-/// 1.sheet id seting "SheetDataURL" d이후부터 export 이전까지 세팅해놔야함
-/// 2.
-
-
-
+//  MADE 7rzr 2023-01-07
+// # GoogleSheetManager
+// 조건 : singleton
+// 세팅 : SheetURL[구글스프레드시트] , SheetDataURL[데이터 받아올시트 "SheetDataURL" d이후부터 export 이전까지 세팅해놔야함]
+// 구글 스프레드 시트와 연동하는 코드임  
+//     유저들이 다른 유저 정보 볼 수있는 혹은 자기꺼 저장해서 남한테 보여주는기능[ex 랭킹] 등 간단한 정보를 웹에 뿌려 사용할때 쓸꺼임  
+//     라이브러리화 시키고싶은데 워낙 수정이 많을 것 같아서 이후 수정하기 용이한 정도만 구현 해놈 
+// GoogleData 클래스에서 뭐 얻을지 설정하고 구글 스프레드시트 apps script 에서 수정해 이용하자 
 ///sheet.getrange(2,2,2,2).setvalue("value"); 값넣기
 /// UnityWebRequest www =UnityWebRequest.Get(SheetURL);
 ///doget함수실행
