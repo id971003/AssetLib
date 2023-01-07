@@ -16,9 +16,9 @@
   * ScenesManager  
   * ObjectPooler   
   * GoogleSheetManager  
-  * Utility   
   * DatasManager   
   * GpgsStorageHelper
+  * Utility   
   
   
 ***
