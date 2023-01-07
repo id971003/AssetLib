@@ -250,7 +250,7 @@ ObjectPoolObject : 모든 풀링할 오브젝트 들이 상속받아쓸 추상 �
         }
     }
  ```
-##### C_LoadData : 정보 받아오는 
+##### C_LoadData : 데이터 받아오는 코드 캐싱해서 사용하면됨  
  ```
      IEnumerator C_LoadData(Action<bool,string,string> afterPrcess)
     {
