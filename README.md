@@ -16,8 +16,8 @@
   * ScenesManager  
   * ObjectPooler   
   * DatasManager   
-  * GpgsStorageHelper
-  * GoogleSheetManager  
+  * GoogleSheetManager
+  * GpgsStorageHelper  //나중에할꺼임
   * Utility   
   
   
@@ -181,6 +181,93 @@ ObjectPoolObject : 모든 풀링할 오브젝트 들이 상속받아쓸 추상 �
 ```
 1-7 일 기준으로 내가 데이터를 저장할때는 클래스하나를 json 화 시켜서 저장한다 그래서 저장되는 모든데이터를 가지고있는 클레스 하나를 Serializable 해서 가지고 다니면서 바꾸고 저장하고 할생각임
 
+***
+ # GoogleSheetManager
+ 조건 : singleton
+ 세팅 : SheetURL[구글스프레드시트] , SheetDataURL[데이터 받아올시트 "SheetDataURL" d이후부터 export 이전까지 세팅해놔야함]
+ 구글 스프레드 시트와 연동하는 코드임  
+ 유저들이 다른 유저 정보 볼 수있는 혹은 자기꺼 저장해서 남한테 보여주는기능[ex 랭킹] 등 간단한 정보를 웹에 뿌려 사용할때 쓸꺼임  
+ 라이브러리화 시키고싶은데 워낙 수정이 많을 것 같아서 이후 수정하기 용이한 정도만 구현 해놈 
+ GoogleData 클래스에서 뭐 얻을지 설정하고 구글 스프레드시트 apps script 에서 수정해 이용하자 
 
+##### Post : 실제 통신 일어나는 곳임 
+```
+     IEnumerator Post(WWWForm form,Action<bool,string> afterProcess=null) //등록
+    {
+        using (UnityWebRequest www = UnityWebRequest.Post(SheetURL, form))
+        {
+            yield return www.SendWebRequest();
+            if (www.isDone) Response(www.downloadHandler.text, afterProcess);
+            else afterProcess?.Invoke(false,"PostFAil");
+        }
+    }
+ ```
+ 
+##### Response : ProcessGoogleData.ordr 타입에 따라 뭐 할지 설정해 놓자 일단 로그인,회원가입 만해놈
+ ```
+     void Response(string json, Action<bool, string> afterProcess=null)
+    {
+        if (string.IsNullOrEmpty(json))
+        {
+            afterProcess?.Invoke(false,"데이터가없는걸");
+            return;
+        }
+        Debug.Log(json);
+        ProcessGoogleData = JsonUtility.FromJson<GoogleData>(json);
+        switch (ProcessGoogleData.order)
+        {
+            case  "login":
+                if (ProcessGoogleData.result == "T")
+                {
+                    afterProcess?.Invoke(true,ProcessGoogleData.value);
+                }
+                else if(ProcessGoogleData.result=="F")
+                {
+                    afterProcess.Invoke(false,ProcessGoogleData.message);
+                }
+                break;
+            case "register":
+                if (ProcessGoogleData.result == "T")
+                {
+                    afterProcess?.Invoke(true,ProcessGoogleData.message);
+                }
+                else if(ProcessGoogleData.result=="F")
+                {
+                    afterProcess.Invoke(false,ProcessGoogleData.message);
+                }
+                break;
+            case  "reRegister":
+                if (ProcessGoogleData.result == "T")
+                {
+                    afterProcess?.Invoke(true,ProcessGoogleData.message);
+                }
+                else if(ProcessGoogleData.result=="F")
+                {
+                    afterProcess.Invoke(false,ProcessGoogleData.message);
+                }
+                break;
+
+        }
+    }
+ ```
+##### C_LoadData : 정보 받아오는 
+ ```
+     IEnumerator C_LoadData(Action<bool,string,string> afterPrcess)
+    {
+        UnityWebRequest request = new UnityWebRequest();
+        using (request = UnityWebRequest.Get(SheetDataURL))
+        {
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                afterPrcess?.Invoke(true,request.downloadHandler.text,"성공");
+            }
+            else
+            {
+                afterPrcess?.Invoke(false,null,"실패");
+            }
+        }
+    }
+ ```
  
 
