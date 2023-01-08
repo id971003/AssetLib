@@ -290,13 +290,12 @@ private static readonly int devicevAlue = 3;
 double kk = 1334;
 Debug.Log(kk.DoubleToString()); > 1.33a
  ```
- * Time : 분을 시간으로 초를 시간으로 변화하는거만들어놈
-   * Time_SecendToTime : 초를 시간으로 
+ * Time_SecendToTime : 초를 시간으로 
  ```
  int kk = 12345;
 Debug.Log(kk.Time_SecendToTime()); > 3시간 25분 45초
  ```
-   * Time_MinuteToTime : 분을 시간으로
+  * Time_MinuteToTime : 분을 시간으로
  ```
 int kk = 12345;
 Debug.Log(kk.Time_MinuteToTime()); > 205시간 45분
