@@ -75,16 +75,18 @@ public class SINGLETON<T,SINGLETONTYPE> : SerializedMonoBehaviour//MonoBehaviour
 
     protected virtual void Awake()
     {
-        if (_singletoneType.Get_SingletoneType() == SINGLETONE_TYPE.DONTDESTROY)
+        if (null == instance)
         {
-            if (instance)
+            instance = this as T;
+            if (_singletoneType.Get_SingletoneType() == SINGLETONE_TYPE.DONTDESTROY)
             {
-                DestroyImmediate(gameObject);
-                return;
+                DontDestroyOnLoad(gameObject);
             }
 
-            instance = this as T;
-            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            DestroyImmediate(gameObject);
         }
 
     }

@@ -5,6 +5,7 @@
 /// 1. objectpool enum filepath 지정
 /// 2. 풀링할 오브젝트들 있는 리소스폴더에 prefabpath 지정
 /// 3. init 버튼 누르면 체크됨 안눌러도 ㄱㅊ
+/// 인게임에서 dic 에 object 들이 들어간다 , 따라서 모든 친구들은 objectpooler 를 상속 받아야한다
 using System;
 using System.Collections.Generic;
 using System.IO;
