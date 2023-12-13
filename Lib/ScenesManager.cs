@@ -58,8 +58,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
-using DG.Tweening;
-
 
 public interface ISceneLisenter
 {
