@@ -47,9 +47,11 @@ public interface ISceneLisenter
 
 public enum EVENT_SCENE
 {
-    SceneMovestart, //이동시작
-    SceneLodingObjectSettingEnd, //로딩화면 이 화면 다가림 넘어가도됨
-    SceneMoveEnd //이동끝 로딩화면치우셈
+    SceneMoveStart, //씬이동시작              Call : OtherObject  /  Listen : CurrentSceneObject , LodingPannel
+    CanSceneMove, //로딩바 다내려와서 씐가림    Call : LodingPannel /  Listen : SceneManager, 
+    SceneMoveSucces, //씬씬넘어감            Call : SceneManager /  Listen : NextSceneObejct
+    NextSceneSetUpEnd, //씬 셋업 끝         Call : NextSceneObject  / Listen : LodingPannel 
+    SceneStart //씬이동 종료                 Call : LodingPannel / Listen : NextSceneObejct
 }
 
 public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.DontDestroy>, ISceneLisenter
@@ -57,22 +59,22 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
 
     public void OnSceneEvent(EVENT_SCENE eventType, Component sender, float param = 0)
     {
-        if (eventType.Equals(EVENT_SCENE.SceneMovestart))
+        if (eventType.Equals(EVENT_SCENE.SceneMoveStart))
         {
-            Debug.Log("SceneMovestart");
-            //자이제 시작한다
-            b_LodingSetEnd = false;
         }
-        if (eventType.Equals(EVENT_SCENE.SceneLodingObjectSettingEnd))
+        if (eventType.Equals(EVENT_SCENE.CanSceneMove))
         {
-            Debug.Log("SceneLodingObjectSettingEnd");
-            //로딩화면 나올때 까지 대기
             b_LodingSetEnd = true;
         }
-        if (eventType.Equals(EVENT_SCENE.SceneMoveEnd))
+        if (eventType.Equals(EVENT_SCENE.SceneMoveSucces))
         {
-            Debug.Log("SceneMoveEnd");
-            //로딩화면 치워도됨
+   
+        }
+        if (eventType.Equals(EVENT_SCENE.NextSceneSetUpEnd))
+        {
+        }
+        if (eventType.Equals(EVENT_SCENE.SceneStart))
+        {
         }
         
 
@@ -80,9 +82,8 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
     [SerializeField] private Dictionary<EVENT_SCENE, List<ISceneLisenter>> Dic_Listeners = new Dictionary<EVENT_SCENE, List<ISceneLisenter>>();
 
     [SerializeField] private Dictionary<EVENT_SCENE, List<bool>>Dic_Listeners_Canremove = new Dictionary<EVENT_SCENE, List<bool>>();
-    [SerializeField] private bool b_LodingSetEnd; //로딩창 과 같은 기능이 있을때 그 로딩창 나오기전에 씬 넘어가면  안되서 막는 친구
-    
-    
+    private bool b_LodingSetEnd; //로딩창 과 같은 기능이 있을때 그 로딩창 나오기전에 씬 넘어가면  안되서 막는 친구
+    [SerializeField] private bool b_TestStartMiddleScene; //정상적으로 넘어와서 시작하는거말고 테스트시 중간씬 시작하는친구
 
     private AsyncOperation MoveSceneOp;
 
@@ -92,8 +93,17 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
     {
         base.Awake();
         EventScene_AddListenerAll(this);
+
     }
 
+    void Start()
+    {
+        if (b_TestStartMiddleScene)
+        {
+            EventPost(EVENT_SCENE.SceneMoveSucces, this);
+        }
+    }
+    
     
     #region 로딩창이동
     /// <summary>
@@ -102,7 +112,7 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
     /// <param name="sceneName"></param> 씬이름
     public void MoveScene_Loding(string sceneName) 
     {
-        EventPost(EVENT_SCENE.SceneMovestart, this);
+        EventPost(EVENT_SCENE.SceneMoveStart, this);
         StartCoroutine(C_MoveScene_Loding(sceneName));
     }
     /// <summary>
@@ -112,21 +122,23 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
     /// <returns></returns>
     IEnumerator C_MoveScene_Loding(string sceneName)
     {
-        
+        b_LodingSetEnd = false;
         MoveSceneOp =  SceneManager.LoadSceneAsync(sceneName);
         MoveSceneOp.allowSceneActivation = false; // 바로 씬 넘어가지 않게금 설정
         yield return new WaitUntil(() => b_LodingSetEnd); //로딩화면 나올때까지 대기 
-        
         while (!MoveSceneOp.isDone)  
         {
             yield return null;
             if (MoveSceneOp.progress >= 0.9f) // 씬이동은끝남
             {
+                EventReSet();
                 MoveSceneOp.allowSceneActivation = true; //씬이동시키고
                 break;
             }
         }
 
+        yield return new WaitUntil(() => MoveSceneOp.isDone);
+        EventPost(EVENT_SCENE.SceneMoveSucces, this);
     }
 
     #endregion
@@ -140,6 +152,7 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
     /// <param name="sceneName"></param> 씬이름
     public void MoveScene_Direct(string sceneName)//씬 바로이동
     {
+        EventReSet();
         SceneManager.LoadScene(sceneName);
     }
 
@@ -150,11 +163,11 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
     /// </summary>
     /// <param name="go"></param>
     #region  MoveSceneEvent
-    public void EventScene_AddListenerAll(ISceneLisenter go,bool CanRemove=true)
+    public void EventScene_AddListenerAll(ISceneLisenter go,bool notRemove=true)
     {
         foreach (EVENT_SCENE event_scene in Enum.GetValues(typeof(EVENT_SCENE)))
         {
-            AddListener(event_scene, go,CanRemove);
+            AddListener(event_scene, go,notRemove);
         }
     }
     public void AddListener(EVENT_SCENE eventType, ISceneLisenter lisTener,bool CanRemove)
@@ -202,7 +215,7 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
         {
             for (int j = 0; j < Dic_Listeners[(EVENT_SCENE)i].Count; j++)
             {
-                if (Dic_Listeners_Canremove[(EVENT_SCENE)i][j])
+                if (!Dic_Listeners_Canremove[(EVENT_SCENE)i][j])
                 {
                     Dic_Listeners_Canremove[(EVENT_SCENE)i].RemoveAt(j);
                     Dic_Listeners[(EVENT_SCENE)i].RemoveAt(j);
