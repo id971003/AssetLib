@@ -29,8 +29,6 @@ RemoveEvent : 이벤트 삭제
 
 EventReSet 리스너 들중 씬 이동시 유지할친구들[DontDestory] 은 다시 등록하고 이전씬에 있던 애들은 다지움
 
-
-
 */
 
   
