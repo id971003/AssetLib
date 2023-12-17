@@ -44,7 +44,10 @@ public class test : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 ***
 ## SoundManager
 조건 : odin , singleton , Dotween  
-세팅 : ReSourcePath_Bgm[bgm 파일들 경로], ReSourcePath_Ef[ef 파일들 경로], filePath[ENUM타입 저장할위치]  
+세팅 : 
+ ReSourcePath_Bgm[bgm 파일들 경로]
+ ReSourcePath_Ef[ef 파일들 경로]
+ filePath[ENUM타입 저장할위치]  
 sound 관리하는 manager 임  
 resource사운드파일들 이름들을 ENUM 타입으로 만들어서 ENUM으로 타입으로 사운드 콜가능  
 EF 들의 경우 소리_몇개 설정할지 해줘야함 즉 이름 마지막에 _"몇개설정할지" 해주면됨  
@@ -55,28 +58,23 @@ SoundManager.Instance.SoundPlay_Ef(soundManager_Enum.bgm1,1);
 ```
 * INIT_ENUM : 
   * RESOURCE 불러와서 ENUM 타입만듬
-* INIT_ENUM : 
+* INIT_Sound : 
   * ENUM 만들어진 친구들 기준으로 SOUND 집어넣음
-* SoundPlay_Ef  
-  * ef 재생
-  * 볼륨,루핑 설정가능
-* SoundPlay_Ef_Decrease  
-  * ef 중첩하면 소리가 점점 작아지는 재생
-  * 기소리,점점작아지는 정도 [ex : 0.9 는 10%씩작아짐] , 최소값 설정가능  
-* SoundPlay_Bgm_Direct
-  * 배경음 재생  
-* SoundPlay_Bgm_Increaas
-  * 배경음 점점 커지면서 재생
-  * 시작볼륨, 끝볼륨, 경과시간 설정가능
-* StopAllSource_Direct
-  * 모든소리즉시정지
-* StopBgm_Direct
-  * 배경음정지
-* StopEf_Direct
-  * 해당이팩트즉시정지
-* StopBgm_Decrease
-  * 배경음 점점정지
-  * 몇초동안 설정가능
+*play
+  * SoundPlay_Bgm_Direct : bgm 즉시재생
+  * SoundPlay_Bgm_Increaas_DoTween : bgm 점점커지면서 재생
+     
+  * SoundPlay_Ef : ef 재생
+  * SoundPlay_Ef_Decrease : ef 재생하는데 이미 동일한 타입 재생중이면 소리 작게 재생
+     
+*Stop
+  * StopBgm_Direct : bgm 즉시 정지
+  * StopBgm_Decrease_DoTween : bgm 점점 정지
+    
+  * StopEf_Direct : ef 해당타입 모두 정지
+    
+  * StopAllSource_Direct : 모든 소리 즉시 정지
+  * StopAllSource_Decrease_DoTween : 모든소리 점점 작아지면서 정지
   
   
 ***
