@@ -2,16 +2,6 @@
  MADE 7rzr 2023-01-06
  update 2023-12-14 로딩창 의존성 제거
 
-조건 : SINGLETON, DoTween  
-세팅 : 로딩패널세팅 , iscenesLisener 상속  
-씬 이동하는 매니저임  
-    ISceneLisenter 는 3개타입으로 이벤트나눔
-로딩을 비동기로 넘기려고 만듬  
-1.씬기능을 정지시키고  
-2.로딩창을 등장시키고 다음씬 로딩이 끝나고 셋업이 끝나면   
-3.로딩바를 치우고 게임을 시작하는구조  
-
-    ```
 public class test : MonoBehaviour,ISceneLisenter //상속
     
 public void OnSceneEvent(EVENT_SCENE eventType, Component sender, float param = 0) //이벤트 콜받음
@@ -21,10 +11,25 @@ public void OnSceneEvent(EVENT_SCENE eventType, Component sender, float param = 
         Debug.Log("Start");
     }
 }
-scenesmanager.EventPost(EVENT_SCENE.SceneSetUpEnd,this); //이벤트 콜링
+
+조건 : SINGLETON  
+세팅 : 로딩패널세팅 , iscenesLisener 상속  
+씬 이동하는 매니저임
+유니티 기본 플로우차트 [Start, Awake..] 에 관련없이 비동기 씬 이동시 자체 로직 만들었음
+EVENT_SCENE 참고
+
+
+EventPost : 이벤트 콜링
     
-scenesmanager.EventScene_AddListenerAll(this); // 이벤트 등록
-    ```
+EventScene_AddListenerAll : 이벤트 등록
+
+AddListener : 리스너 등록
+    
+RemoveEvent : 이벤트 삭제
+
+EventReSet 리스너 들중 씬 이동시 유지할친구들[DontDestory] 은 다시 등록하고 이전씬에 있던 애들은 다지움
+
+
 
 */
 
@@ -37,7 +42,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
-using DG.Tweening;
 
 public interface ISceneLisenter
 {
@@ -158,19 +162,26 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
 
     #endregion
 
-     /// <summary>
-    /// 이벤트 종류
-    /// </summary>
-    /// <param name="go"></param>
     #region  MoveSceneEvent
-    public void EventScene_AddListenerAll(ISceneLisenter go,bool notRemove=true)
+    /// <summary>
+    /// 오든 이벤트에 해당 오브젝트 등록하기
+    /// </summary>
+    /// <param name="go"></param> 리스너
+    /// <param name="CanRemove"></param> 지워지는 친구인지
+    public void EventScene_AddListenerAll(ISceneLisenter go,bool CanRemove=true)
     {
         foreach (EVENT_SCENE event_scene in Enum.GetValues(typeof(EVENT_SCENE)))
         {
-            AddListener(event_scene, go,notRemove);
+            AddListener(event_scene, go,CanRemove);
         }
     }
-    public void AddListener(EVENT_SCENE eventType, ISceneLisenter lisTener,bool CanRemove)
+     /// <summary>
+     /// 오브젝트 이벤트 등록하기
+     /// </summary>
+     /// <param name="eventType"></param> 이벤트 종류
+     /// <param name="lisTener"></param> 리스너
+     /// <param name="CanRemove"></param> 지워지는친구인가?
+    public void AddListener(EVENT_SCENE eventType, ISceneLisenter lisTener,bool CanRemove=true)
     {
         List<ISceneLisenter> listenList = null;
         
@@ -190,6 +201,12 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
         Dic_Listeners_Canremove.Add(eventType,ListenCanRemoveList);
     }
 
+     /// <summary>
+     /// 이벤트 발동
+     /// </summary>
+     /// <param name="eventType"></param> 이벤트종류
+     /// <param name="sender"></param> 보내는친구
+     /// <param name="param"></param> 넘길 값
     public void EventPost(EVENT_SCENE eventType, Component sender, float param = 0)
     {
         List<ISceneLisenter> listenList = null;
@@ -203,12 +220,19 @@ public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.D
             }
         }
     }
+     /// <summary>
+     /// 이벤트 자체를 제거 
+     /// </summary>
+     /// <param name="eventType"></param>
 
     public void RemoveEvent(EVENT_SCENE eventType)
     {
         Dic_Listeners.Remove(eventType);
     }
 
+     /// <summary>
+     /// 씬이동할때 등록된 오브젝트를 중에 씬 못넘어오는친구들[DontDestory 가 아닌친구] 들 삭제하고 넘어온친구들은 유지시킴
+     /// </summary>
     public void EventReSet()
     {
         for (int i = 0; i < Dic_Listeners.Count; i++)
