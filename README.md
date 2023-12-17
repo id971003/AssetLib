@@ -79,6 +79,37 @@ SoundManager.Instance.SoundPlay_Ef(soundManager_Enum.bgm1,1);
   
 ***
 ## ScenesManager
+조건 : SINGLETON
+세팅 : Script Excution Order 에 Defailt Time 위로 SceneManager 올리자 [정확히는 SceneManager 의 이벤트 콜받는 애들보다만 위에있으면 됨]
+       ISceneLisenter 상속받고 구현 해주고 Awake에 EventScene_AddListenerAll 추가해서 이벤트 등록해주면됨
+       
+Scene 전환을 관리하고 유니티 플로우차트[Start,Awake] 말고 씬전환 타임에 이벤트 관리하는 EventManager 역할도 함
+
+ISceneLisenter 는 5개 타입으로 나눔
+
+SceneMoveStart, //씬이동시작              Call : OtherObject  /  Listen : CurrentSceneObject , LodingPannel
+CanSceneMove, //로딩바 다내려와서 씐가림    Call : LodingPannel /  Listen : SceneManager, 
+SceneMoveSucces, //씬씬넘어감            Call : SceneManager /  Listen : NextSceneObejct
+NextSceneSetUpEnd, //씬 셋업 끝         Call : NextSceneObject  / Listen : LodingPannel 
+SceneStart //씬이동 종료                 Call : LodingPannel / Listen : NextSceneObejct
+
+GetAsynWlsgod 프로퍼티 친구로 로딩 얼마나 됬는지 로딩 패널에서 관리후 제어 
+
+MoveScene_Loding : 비동기 로딩 시작
+
+MoveScene_Direct : 즉시 이동 
+
+이벤트
+AddListener : 해당 오브젝트 해당 이벤트 등록
+EventScene_AddListenerAll : 해당 오브젝트 모든 이벤트에 등록
+EventPost : 이벤트 발동
+RemoveEvent : 이벤트 지우기
+EventReSet : 씬이동하는 매니저다보니 저번씬에 있던 친구들이 아직 있을 수 도 있어 저번씬에서 등록한 오브젝트들 삭제 시킴 [ C_MoveScene_Loding 에서 씬이동 전에 실행]
+
+
+
+***
+## ScenesManager_LodingBar Vers
 조건 : SINGLETON, DoTween  
 세팅 : 로딩패널세팅 , iscenesLisener 상속  
 씬 이동하는 매니저임  
