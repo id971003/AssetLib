@@ -60,14 +60,14 @@ SoundManager.Instance.SoundPlay_Ef(soundManager_Enum.bgm1,1);
   * RESOURCE 불러와서 ENUM 타입만듬
 * INIT_Sound : 
   * ENUM 만들어진 친구들 기준으로 SOUND 집어넣음
-*play
+* play
   * SoundPlay_Bgm_Direct : bgm 즉시재생
   * SoundPlay_Bgm_Increaas_DoTween : bgm 점점커지면서 재생
      
   * SoundPlay_Ef : ef 재생
   * SoundPlay_Ef_Decrease : ef 재생하는데 이미 동일한 타입 재생중이면 소리 작게 재생
-     
-*Stop
+
+* Stop
   * StopBgm_Direct : bgm 즉시 정지
   * StopBgm_Decrease_DoTween : bgm 점점 정지
     
