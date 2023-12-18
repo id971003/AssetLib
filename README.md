@@ -31,7 +31,7 @@ Canvas 해상도 고정하는친구임
 * 가로기준으로 해상도 맞추고 색변경함  
 * screenMatchMode 를 Expand 로 변경함   
 ***
-## Singelton
+## Singelton [Update 2023-12-18]
 조건 : Odin, 상속  
 세팅 : SINGLETONTYPE[Dontdestroy 할껀지 안할껀지]  
 싱글톤이다  
@@ -42,7 +42,7 @@ public class test : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 * 상속받은친구에 Awake 에 base.Awake 넣어주자  
 * 오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨  
 ***
-## SoundManager
+## SoundManager  
 조건 : odin , singleton , Dotween  
 세팅 : 
  ReSourcePath_Bgm[bgm 파일들 경로]
