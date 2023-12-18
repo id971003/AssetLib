@@ -87,12 +87,12 @@ Scene 전환을 관리하고 유니티 플로우차트[Start,Awake] 말고 씬�
 
 ISceneLisenter 는 5개 타입으로 나눔
 
-SceneMoveStart, //씬이동시작              Call : OtherObject  /  Listen : CurrentSceneObject , LodingPannel
-CanSceneMove, //로딩바 다내려와서 씐가림    Call : LodingPannel /  Listen : SceneManager, 
-SceneMoveSucces, //씬씬넘어감            Call : SceneManager /  Listen : NextSceneObejct
-NextSceneSetUpEnd, //씬 셋업 끝         Call : NextSceneObject  / Listen : LodingPannel 
-SceneStart //씬이동 종료                 Call : LodingPannel / Listen : NextSceneObejct
-
+SceneMoveStart, //씬이동시작              Call : OtherObject  /  Listen : CurrentSceneObject , LodingPannel  
+CanSceneMove, //로딩바 다내려와서 씐가림    Call : LodingPannel /  Listen : SceneManager  
+SceneMoveSucces, //씬씬넘어감            Call : SceneManager /  Listen : NextSceneObejct  
+NextSceneSetUpEnd, //씬 셋업 끝         Call : NextSceneObject  / Listen : LodingPannel   
+SceneStart //씬이동 종료                 Call : LodingPannel / Listen : NextSceneObejct  
+  
 GetAsynWlsgod 프로퍼티 친구로 로딩 얼마나 됬는지 로딩 패널에서 관리후 제어 
 
 MoveScene_Loding : 비동기 로딩 시작
