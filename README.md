@@ -100,10 +100,10 @@ MoveScene_Loding : 비동기 로딩 시작
 MoveScene_Direct : 즉시 이동 
 
 이벤트
-AddListener : 해당 오브젝트 해당 이벤트 등록
-EventScene_AddListenerAll : 해당 오브젝트 모든 이벤트에 등록
-EventPost : 이벤트 발동
-RemoveEvent : 이벤트 지우기
+AddListener : 해당 오브젝트 해당 이벤트 등록  
+EventScene_AddListenerAll : 해당 오브젝트 모든 이벤트에 등록  
+EventPost : 이벤트 발동  
+RemoveEvent : 이벤트 지우기  
 EventReSet : 씬이동하는 매니저다보니 저번씬에 있던 친구들이 아직 있을 수 도 있어 저번씬에서 등록한 오브젝트들 삭제 시킴 [ C_MoveScene_Loding 에서 씬이동 전에 실행]
 
 
@@ -114,9 +114,9 @@ EventReSet : 씬이동하는 매니저다보니 저번씬에 있던 친구들이
 세팅 : 로딩패널세팅 , iscenesLisener 상속  
 씬 이동하는 매니저임  
 ISceneLisenter 는 3개타입으로 이벤트나눔
- * MoveSceneStart : 이동시작함 씬에 모든기능 정지 [씬매니저가 콜]
- * SceneSetUpEnd : 이동한씬에서 쎗업이 끝남 [넘어간 씬에서 콜]
- * Event_LodingFaddedEnd : 로딩창이 다치워짐 게임시작 [씬매니저가 콜]
+ * MoveSceneStart : 이동시작함 씬에 모든기능 정지 [씬매니저가 콜]  
+ * SceneSetUpEnd : 이동한씬에서 쎗업이 끝남 [넘어간 씬에서 콜]  
+ * Event_LodingFaddedEnd : 로딩창이 다치워짐 게임시작 [씬매니저가 콜]  
 로딩을 비동기로 넘기려고 만듬  
 1.씬기능을 정지시키고  
 2.로딩창을 등장시키고 다음씬 로딩이 끝나고 셋업이 끝나면   
