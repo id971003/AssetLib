@@ -42,7 +42,7 @@ public class test : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 * 상속받은친구에 Awake 에 base.Awake 넣어주자  
 * 오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨  
 ***
-## SoundManager  
+## SoundManager   [Update 2023-12-14]
 조건 : odin , singleton , Dotween  
 세팅 : 
  ReSourcePath_Bgm[bgm 파일들 경로]
@@ -78,7 +78,7 @@ SoundManager.Instance.SoundPlay_Ef(soundManager_Enum.bgm1,1);
   
   
 ***
-## ScenesManager
+## ScenesManager [Update 2023-12-17]
 조건 : SINGLETON
 세팅 : Script Excution Order 에 Defailt Time 위로 SceneManager 올리자 [정확히는 SceneManager 의 이벤트 콜받는 애들보다만 위에있으면 됨]
        ISceneLisenter 상속받고 구현 해주고 Awake에 EventScene_AddListenerAll 추가해서 이벤트 등록해주면됨
@@ -109,7 +109,7 @@ EventReSet : 씬이동하는 매니저다보니 저번씬에 있던 친구들이
 
 
 ***
-## ScenesManager_LodingBar Vers
+## ScenesManager_LodingBar Vers [Update 2023-12-17]
 조건 : SINGLETON, DoTween  
 세팅 : 로딩패널세팅 , iscenesLisener 상속  
 씬 이동하는 매니저임  
