@@ -1,11 +1,13 @@
-// MADE 7rzr 2023-01-04
-//ObjectPooler.SpawnFormPool(ObjectPool.a,gameObject.transform.position);
-///
-/// 자동인잇하는 오브젝트플러
-/// 1. objectpool enum filepath 지정
-/// 2. 풀링할 오브젝트들 있는 리소스폴더에 prefabpath 지정
-/// 3. init 버튼 누르면 체크됨 안눌러도 ㄱㅊ
-/// 인게임에서 dic 에 object 들이 들어간다 , 따라서 모든 친구들은 objectpooler 를 상속 받아야한다
+/*
+ MADE 7rzr 2023-01-04
+ 
+ObjectPooler.SpawnFormPool(ObjectPool.a,gameObject.transform.position);
+
+자동인잇하는 오브젝트플러
+1. objectpool enum filepath 지정
+2. 풀링할 오브젝트들 있는 리소스폴더에 prefabpath 지정
+3. init 버튼 누르면 체크됨 안눌러도 ㄱㅊ
+*/
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +17,9 @@ using OBJECTPOOL;
 using Unity.Mathematics;
 
 
-public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.DontDestroy>
+public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 {
-    private string filePath=@"Assets\Scripte\Lib\ObjectPoller\OBJECTPOOL.cs";
+    private string filePath=@"Assets\GameContant\Script\Lib\ObjectPoller\OBJECTPOOL.cs";
     private readonly string message = "namespace OBJECTPOOL { public enum ObjectPool {";
     private readonly string message2 = "}}\n";
 
@@ -88,8 +90,9 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
 
     #endregion
 
-
-
+    
+    [SerializeField] Dictionary<string, GameObject> ttest = new Dictionary<string, GameObject>();
+    
     void CreateNewObjectPool(ObjectPool objectName,int count)
     {
         Dic_NameToQueueGameObject.Add(objectName,new Queue<GameObject>());
@@ -150,6 +153,10 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
     {
         return Instance._SpawnFormPool(objectName, parent).GetComponent<T>();
     }
+    public static T _SpawnFormPool_Ui<T> (ObjectPool objectName,GameObject parent) where T : Component
+    {
+        return Instance._SpawnFormPool_Ui(objectName, parent).GetComponent<T>();
+    }
     
 
     GameObject _SpawnFormPool(ObjectPool objectName, Vector3 position, quaternion rotation)
@@ -177,6 +184,20 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
         go = Dic_NameToQueueGameObject[objectName].Dequeue();
         go.transform.position = parent.transform.position;
         go.transform.parent = parent.transform;
+        go.SetActive(true);
+        return go;
+    }
+    GameObject _SpawnFormPool_Ui(ObjectPool objectName,GameObject parent)
+    {
+        if(!Dic_NameToQueueGameObject.ContainsKey(objectName))
+            Debug.LogError("error - objectpooler"+objectName);
+        GameObject go;
+        if (Dic_NameToQueueGameObject[objectName].Count <= 0)
+            go= CreateNewObject(objectName);
+
+        go = Dic_NameToQueueGameObject[objectName].Dequeue();
+        go.transform.position = parent.transform.position;
+        go.transform.SetParent(parent.transform);
         go.SetActive(true);
         return go;
     }

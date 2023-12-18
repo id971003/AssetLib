@@ -1,10 +1,11 @@
-/// <summary>
-/// public class objectpooltest : ObjectPoolObject
-///     public override void SetUp()
-///{
-///}
-/// 
-/// </summary>
+/*
+public class objectpooltest : ObjectPoolObject
+     public override void SetUp()
+ 
+ SetUp 오버라이딩 해서 사용
+ 
+ 
+*/
 using UnityEngine;
 
 public abstract class ObjectPoolObject : MonoBehaviour
