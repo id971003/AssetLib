@@ -15,7 +15,7 @@ using OBJECTPOOL;
 using Unity.Mathematics;
 
 
-public class ObjectPooler : SINGLETON<ObjectPooler,SINGLETONE.SINGLETONEType.DontDestroy>
+public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.DontDestroy>
 {
     private string filePath=@"Assets\Scripte\Lib\ObjectPoller\OBJECTPOOL.cs";
     private readonly string message = "namespace OBJECTPOOL { public enum ObjectPool {";

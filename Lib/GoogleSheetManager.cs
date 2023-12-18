@@ -23,7 +23,7 @@ public class GoogleData
         value; // 결과
 }
 
-public class GoogleSheetManager : SINGLETON<GoogleSheetManager,SINGLETONE.SINGLETONEType.DontDestroy>
+public class GoogleSheetManager : SINGLETON<GoogleSheetManager,Ns_SINGLETONE.SINGLETONEType.DontDestroy>
 {
     //시트 코드 들어간 url
     private const string SheetURL =

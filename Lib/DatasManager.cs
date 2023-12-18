@@ -10,7 +10,7 @@
 
 
 
-public class DatasManager :  SINGLETON<DatasManager,SINGLETONE.SINGLETONEType.DontDestroy>
+public class DatasManager :  SINGLETON<DatasManager,Ns_SINGLETONE.SINGLETONEType.DontDestroy>
 {
     public DataList DataList;
     

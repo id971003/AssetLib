@@ -56,7 +56,7 @@ public enum EVENT_SCENE
     SceneStart //씬이동 종료                 Call : LodingPannel / Listen : NextSceneObejct
 }
 
-public class ScenesManager : SINGLETON<ScenesManager,SINGLETONE.SINGLETONEType.DontDestroy>, ISceneLisenter
+public class ScenesManager : SINGLETON<ScenesManager,Ns_SINGLETONE.SINGLETONEType.DontDestroy>, ISceneLisenter
 {
 
     public void OnSceneEvent(EVENT_SCENE eventType, Component sender, float param = 0)

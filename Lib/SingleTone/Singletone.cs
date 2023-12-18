@@ -8,14 +8,14 @@
 //상속받은친구에 Awake 에 base.Awake 넣어주자  
 //오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨  
 /// </summary>
-using SINGLETONE;
+using Ns_SINGLETONE;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 
 
 
-namespace SINGLETONE
+namespace Ns_SINGLETONE
 {
     public enum SINGLETONE_TYPE
     {
@@ -49,7 +49,7 @@ namespace SINGLETONE
 
 public class SINGLETON<T,SINGLETONTYPE> : SerializedMonoBehaviour//MonoBehaviour  오딘안쓸꺼면 모노 쓰셈
     where T : MonoBehaviour
-    where  SINGLETONTYPE : SINGLETONE.ISingletone_type
+    where  SINGLETONTYPE : Ns_SINGLETONE.ISingletone_type
 {
     
     private static SINGLETONTYPE _singletoneType;
