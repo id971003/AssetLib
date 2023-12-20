@@ -40,9 +40,9 @@ public class test : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 ```
 * 끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자  
 * 상속받은친구에 Awake 에 base.Awake 넣어주자  
-* 오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨
-아래 두경우는 결과 값이 같다 외부에서 생성 후 함수 실행하면 Awake>Enable>함수>Start 순으로 실행한다.
-[이유는모름 gpt는 Awake>Enable>Start>함수 순이라는데 틀림]
+* 오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨  
+* 아래 두경우는 결과 값이 같다 외부에서 생성 후 함수 실행하면 Awake>Enable>함수>Start 순으로 실행한다.  
+  [이유는모름 gpt는 Awake>Enable>Start>함수 순이라는데 틀림]
 ![1](https://github.com/id971003/AssetLib/assets/79170289/c499f21e-ceaf-48f0-8522-f9daf29f6c8b)
 ![2](https://github.com/id971003/AssetLib/assets/79170289/b6736657-115e-4fb7-88a9-b936afef8296)
 
