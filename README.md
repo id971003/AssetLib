@@ -40,7 +40,10 @@ public class test : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 ```
 * 끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자  
 * 상속받은친구에 Awake 에 base.Awake 넣어주자  
-* 오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨  
+* 오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨
+![1](https://github.com/id971003/AssetLib/assets/79170289/c499f21e-ceaf-48f0-8522-f9daf29f6c8b)
+![2](https://github.com/id971003/AssetLib/assets/79170289/b6736657-115e-4fb7-88a9-b936afef8296)
+
 ***
 ## SoundManager   [Update 2023-12-14]
 조건 : odin , singleton , Dotween  
