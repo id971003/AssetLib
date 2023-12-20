@@ -94,19 +94,32 @@ public class ScenesManager : SINGLETON<ScenesManager,Ns_SINGLETONE.SINGLETONETyp
     protected override void Awake()
     {
         base.Awake();
+        Debug.Log("2");
+        Debug.Log("4");
+        Debug.Log("5");
+        Debug.Log("6");
+        Debug.Log("7");
+        Debug.Log("8");
         EventScene_AddListenerAll(this);
 
     }
 
     void Start()
     {
+        Debug.Log("3");
         if (b_TestStartMiddleScene)
         {
             EventPost(EVENT_SCENE.SceneMoveSucces, this);
         }
+
     }
-    
-    
+
+    private void OnEnable()
+    {
+        Debug.Log("3-1");
+    }
+
+
     #region 로딩창이동
     /// <summary>
     /// 씬이동 - 로딩
@@ -156,6 +169,7 @@ public class ScenesManager : SINGLETON<ScenesManager,Ns_SINGLETONE.SINGLETONETyp
     {
         EventReSet();
         SceneManager.LoadScene(sceneName);
+        Debug.Log("dir");
     }
 
     #endregion
