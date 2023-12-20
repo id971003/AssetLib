@@ -58,11 +58,9 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using SoundManager_Enum;
-using Random = System.Random;
 
 
-public interface ISceneLisenter_LodingbarVar
+ public interface ISceneLisenter_LodingbarVar
 {
     void OnSceneEvent_LodingbarVar(EVENT_SCENE_LodingbarVar eventType, Component sender, float param = 0);
     
