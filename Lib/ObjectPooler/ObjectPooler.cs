@@ -1,5 +1,6 @@
 /*
  MADE 7rzr 2023-01-04
+Update 12-21 InitEnum 에 Reflash 자동화
  
 ObjectPooler.SpawnFormPool(ObjectPool.a,gameObject.transform.position);
 
@@ -14,12 +15,13 @@ using System.IO;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using OBJECTPOOL;
+using UnityEditor;
 using Unity.Mathematics;
 
 
 public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 {
-    private string filePath=@"Assets\GameContant\Script\Lib\ObjectPoller\OBJECTPOOL.cs";
+    private string filePath=@"Assets\AssetLib\Lib\ObjectPooler\OBJECTPOOL.cs";
     private readonly string message = "namespace OBJECTPOOL { public enum ObjectPool {";
     private readonly string message2 = "}}\n";
 
@@ -27,6 +29,7 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
 
     [SerializeField] Dictionary<ObjectPool, Queue<GameObject>> Dic_NameToQueueGameObject = new Dictionary<ObjectPool, Queue<GameObject>>();
     [SerializeField] Dictionary<ObjectPool, GameObject> Dic_NameToPreFab = new Dictionary<ObjectPool, GameObject>();
+
 
     #region init
     
@@ -58,6 +61,7 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
         writer.WriteLine(message2);
         writer.Close();
         fileStream.Close();
+        AssetDatabase.Refresh();
     }
         
     [Button]
@@ -90,9 +94,6 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
 
     #endregion
 
-    
-    [SerializeField] Dictionary<string, GameObject> ttest = new Dictionary<string, GameObject>();
-    
     void CreateNewObjectPool(ObjectPool objectName,int count)
     {
         Dic_NameToQueueGameObject.Add(objectName,new Queue<GameObject>());
@@ -222,7 +223,7 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
     protected override void Awake()
     {
         base.Awake();
-        Init_EnumType();
+        //Init_EnumType();
         Init_Object();
     }
     
