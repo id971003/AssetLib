@@ -165,12 +165,12 @@ EventScene_AddListenerAll : 모든 이벤트 등록
 씬매니저의 콜을 받거나 콜을 할 친구들에게는 ISceneLisenter 상속후 Awake에서 EventScene_AddListenerAll 해주면됨
 
 ***
-# ObjectPooler
+# ObjectPooler [Update 2023-12-21]  
 조건 : SingleTon , Odin  
 세팅 : filePath[enum 스크립트 저장될 경로] , PrefabPath[Prefab 받아올 경로 reousrce 안에]  
 오브젝트 풀러임  
-Init_EnumType : PrefabPath 에서 프리팹 받아와서 프리팹 이름으로 enum 타입만듬 이름마지막에 몇개 만들지  
- ex) object1_5 >object1  
+Init_EnumType : PrefabPath 에서 프리팹 받아와서 프리팹 이름으로 enum 타입만들고 Reflash함
+ ex) object1_5 >object1 [5개만듬]  
 Init_Object : Init_EnumType 다음에실행 , object 받아와서 실 갯수로 집어넣음  
 Dictionary<ObjectPool, Queue<GameObject>> 구조로 큐 안에 오브젝트 집어넣고 setactive 가 꺼진 상태로 들어가 셋업된다   
 SpawnFormPool : 오브젝트 꺼내다 가져다씀 Init_EnumType 에서 만든 Enum(ObjectPool) 으로 콜해 키고 사용  
