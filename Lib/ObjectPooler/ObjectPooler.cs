@@ -19,6 +19,7 @@ using UnityEditor;
 using Unity.Mathematics;
 
 
+
 public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 {
     private string filePath=@"Assets\AssetLib\Lib\ObjectPooler\OBJECTPOOL.cs";
@@ -61,8 +62,17 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
         writer.WriteLine(message2);
         writer.Close();
         fileStream.Close();
+
+        
+
+        
+
+#if UNITY_EDITOR
         AssetDatabase.Refresh();
+        #endif
     }
+    
+    
         
     [Button]
     void Init_Object()
