@@ -16,7 +16,7 @@ public abstract class ObjectPoolObject : MonoBehaviour
 
     protected virtual void OnDisable()
     {
-        Debug.Log("a");
+        
         ObjectPooler.ReturnToPool(gameObject);
         StopAllCoroutines();
         CancelInvoke();

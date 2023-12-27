@@ -22,9 +22,14 @@ ex) public class kk : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 즉 생성 시 Awake>Start 바로 되는게아니라 Start에서 뭔가 셋업이일어나고  생성과 동시에 어떤 함수를 실행하면 오류난다
 [왜? : Start 에서 일어날 셋업보다 함수의 실행이 먼저 일어 나기떄문이지] 
 즉 셋업은 Awake 에서 앵간하면 다하자
-+
+
 gpt 한태물어보니 특정함수보다[3번] 이악물고 Start[4번] 가 먼저라는데 왜 내경우는 start가 뒤일까?
 결과는 바뀌는거없다 애매하면 Awake 에서 다하자
+
++
+싱글톤 타입인 친구들중에  dontdestroy로 인 애들은 scripte  순서를 defalt 타임 위로 올려주자
+[없는거 생성할떈 잘 되는데 이미 있는거 dontdestroy 로 넘어갈때 재생성 되기떄문이지]
+
 */
 
 
