@@ -4,26 +4,26 @@ update 12.14 내가만든 뭔가를 쓰는데 에셋이나 다른 라이브러�
 어차피 같이쓸거 같아서 엄청 의존적이게 해놈 조건 잘보고 써야한다
 
 * Asset  
-  * Dotween  
+  * Dotween    
   * Odin  
   * DgDataBase[아직안함]  
 
 
 
 * Lib  
-  * CameraResolution_Canvas
-  * Singelton  
-  * SoundManager
-  * ScenesManager  
-  * ObjectPooler   
-  * DatasManager   
-  * GoogleSheetManager
+  * CameraResolution_Canvas [Update 2023-12-18]  
+  * Singelton [Update 2023-12-18]  
+  * SoundManager [Update 2023-12-14]  
+  * ScenesManager [Update 2023-12-17]  
+  * ObjectPooler [Update 2023-12-21]  
+  * DatasManager [Update 2023-12-27]  
+  * GoogleSheetManager  [Update 2023-12-30]
   * GpgsStorageHelper  //나중에할꺼임
-  * Utility   
+  * Utility [Update 2023-12-31]     
   
   
 ***
-## CameraResolution_Canvas  
+## CameraResolution_Canvas [Update 2023-12-18]  
 조건 : 켄버스에 집에넣어야함  
 세팅 : setwidth[가로],setheight[세로],letterboxcolor[레터박스색]  
 Canvas 해상도 고정하는친구임  
