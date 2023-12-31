@@ -358,14 +358,25 @@ Unit 에 넣을 단위 넣으면된다
         }
 
 ```
-
  * Time  
  Time_MinuteToTime : 분 > 시간+분 [364분 > 6시간 4분 ]
  Time_SecendToTime : 초 > 시간+분+초 [364초 > 6분 4초]
  * WeekDay  
  DateTime 기준으로 다음주 월요일 계산 [LastDateOfWeek 의 addday 6이면 월요일 7이면 화요일 ...]
- * C_ReSize_StaticSizeObjectNearBatch  
- 재화이미지에 수량이 표기될때 둘을 가운데 정렬하는  친구임
- 
 
+ * C_ReSize_StaticSizeObjectNearBatch  
+ 재화이미지에 수량이 표기될때 둘을 가운데 정렬하는  친구임  
+조건  
+ 크기 변화하는 친구[text] 에 contantsizefitter 넣어주기  
+ 이미지와 텍스트 둘다 앵커 만지지말고 y값 앵간하면 같게 해주기  
+
+contantsizefitter 로 사이즈 조정하다보니 값변하고 다음 프레임에 동작해야함 그래서 코루틴으로 한프레임텀줌
+ ```
+    public static IEnumerator C_ReSize_StaticSizeObjectNearBatch(string TargetText,Image leftImage,Text rightText)
+    {
+        rightText.text = TargetText;
+        yield return WaitFrame;
+        정렬로직
+    }
+```
 
