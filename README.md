@@ -316,7 +316,7 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
  ```
  
  ***
- # Utility [Update 12-31]
+ # Utility [Update 2023-12-31]
  나머지 잡다한거 모아논거 static 클래스임
 
  * WaitForSceond  
