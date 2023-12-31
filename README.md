@@ -331,7 +331,7 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
     ...
 ```
  * SortListSomthingValue  
- 어떤 타입의 리스트가 있을때 그 리스트를 어떤 값을 기준으로 정렬하는 메서드다.
+ 어떤 타입의 리스트가 있을때 그 리스트를 어떤 값을 기준으로 정렬하는 메서드다.  
 내림차순 오름자순 알아서 쓰면될듯 T 에는 list 타입 Tkey 엔 어떤거 기준으로 정렬할지 적으면 된다
 ```
     public static void SortListSomthingValue<T, TKey>(List<T> list, Func<T, TKey> keySelector)
