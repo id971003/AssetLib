@@ -366,7 +366,7 @@ Unit 에 넣을 단위 넣으면된다
 
  * C_ReSize_StaticSizeObjectNearBatch  
  재화이미지에 수량이 표기될때 둘을 가운데 정렬하는  친구임  
- ** 조건
+ ** 조건  
  *** 크기 변화하는 친구[text] 에 contantsizefitter 넣어주기  
  *** 이미지와 텍스트 둘다 앵커 만지지말고 y값 앵간하면 같게 해주기  
 
