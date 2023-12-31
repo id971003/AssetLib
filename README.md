@@ -319,6 +319,6 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
  # Utility [Update 12-31]
  나머지 잡다한거 모아논거 static 클래스임
 
- *WaitForSceond  
+ * WaitForSceond  
  코루틴할때 waitforsecond 나 딜레이를 주는 경우가 많은데이거 미리 캐싱해서 이용한다. 미리 만들어 놓으면 new 를 덜 호출해 메모리적으로 안정적이라고한다.
 
