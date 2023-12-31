@@ -344,7 +344,21 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
     }
 ```
  * ValueToUnit  
- 수에 자리수 넣기 ( ex 123456 > 1.23만) 소숫점 2개까지 나오게해줌
+ 수에 자리수 넣기 ( ex 123456 > 1.23만) 소숫점 2개까지 나오게해줌  
+Unit 에 넣을 단위 넣으면된다  
+아래 부분 수정해 소숫점 어떻게 할지 정하면된다
+```
+        if (value < 1)
+        {
+            return value.ToString("N1");
+        }
+        if (value < powv)
+        {
+            return value.ToString("#,##0");
+        }
+
+```
+
  * Time  
  Time_MinuteToTime : 분 > 시간+분 [364분 > 6시간 4분 ]
  Time_SecendToTime : 초 > 시간+분+초 [364초 > 6분 4초]
