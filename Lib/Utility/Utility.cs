@@ -2,7 +2,35 @@
 made 7rzr 2022-1-7
 update 2023-12-29
 쓸만한것들 모아논것
-1.
+1. WaitForSeconds
+    코루틴할때 waitforsecond 나 딜레이를 주는 경우가 많은데
+    이거 미리 캐싱해서 이용한다. 미리 만들어 놓으면 new 를 덜 호출해 메모리적으로 안정적이라고한다.
+
+2. SortListSomthingValue
+    어떤 타입의 리스트가 있을때 그 리스트를 어떤 값을 기준으로 정렬하는 메서드다
+
+3. ValueToUnit
+    수에 자리수 넣기 ( ex 123456 > 1.23만) 소숫점 2개까지 나오게해줌 
+    세팅
+        devicevAlue : 몇자리로 끊을껀지 [보통 4개겠지?]
+        Unit : 단위수 만,억,조 등등... 넘어가면 123456억 이렇게나옴
+        
+4. Time
+    Time_MinuteToTime : 364분 > 6시간 4분
+    Time_SecendToTime : 364초 > 6분 4초
+    
+5. WeekDay
+   DateTime 기준으로 다음주 월요일 계산 [LastDateOfWeek 의 addday 6이면 월요일 7이면 화요일 ...]
+   string type 으로 반화해 계산
+   
+6. C_ReSize_StaticSizeObjectNearBatch
+    재화이미지에 수량이 표기될때 둘을 가운데 정렬하는  친구임
+    인자 엔 값, 왼쪽 이미지 , 오른쪽 text 가 들어감
+    세팅
+        이미지와 텍스트는 앵커값조절x[0.5고정]
+        텍스트엔 contantsizefitter 넣고 horizontalfit 값은 preferred size
+    contantsizefitter 이용하다보니 값이 들어가고 다음프레임에서 위치 조절이 일어나야함 그래서 코루틴으로 다음프레임 실행
+
 */
 
 
@@ -10,10 +38,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Collections;
+using UnityEngine.UI;
 using System.Linq;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 
 
 public static class Utility 
@@ -34,49 +64,19 @@ public static class Utility
     
     
     #endregion
-    #region 정렬
-    public static void QuickSort(List<List<string>> array,int comIndex=1)
-    {
-        var p = 0;
-        var r = array.Count - 1;
-        if(p<r)
-        {
-            var q = Partition(array, p, r);
-            QuickSort(array, p, q - 1,comIndex);
-            QuickSort(array, q + 1, r,comIndex);
-        }
-    }
-    static void QuickSort(List<List<string>> array,int p, int r,int comIndex=1)
-    {
-        if (p < r)
-        {
-            var q = Partition(array, p, r,comIndex);
-            QuickSort(array, p, q - 1);
-            QuickSort(array, q + 1, r);
-        }
-    }
-    static int Partition(List<List<string>> array, int p ,int r,int comIndex=1)
-    {
-        var q = p;
-        for(int j=p;j<r;j++)
-        {
-            if (float.Parse(array[j][comIndex]) >=float.Parse(array[r][comIndex]))
-            {
-                Swap(array, q, j);
-                q++;
-            }
-        }
-        Swap(array, q, r);
-        return q;
-    }
-    static void Swap(List<List<string>> array, int beforeIndex,int afterIndex)
-    {
-        (array[beforeIndex], array[afterIndex]) = (array[afterIndex], array[beforeIndex]);
-    }
-    
 
+    #region SortListSomthingValue
+    public static void SortListSomthingValue<T, TKey>(List<T> list, Func<T, TKey> keySelector)
+    {
+        //오름차순
+        list.Sort((item1, item2) => Comparer<TKey>.Default.Compare(keySelector(item1), keySelector(item2)));
+        
+        //내림차순
+        //list.Sort((item1, item2) => Comparer<TKey>.Default.Compare(keySelector(item2), keySelector(item1))); 
+    }
     #endregion
-    #region ValueTounit 꼬리표
+    
+    #region ValueToUnit
     public static readonly string[] Unit =
     {
         "만",
@@ -94,7 +94,7 @@ public static class Utility
 
     private static readonly int devicevAlue = 4;
     private static readonly float  powv= Mathf.Pow(10, devicevAlue);
-    public static string DoubleToString(this float value) //꼬리 2개
+    public static string ValueToUnit(this float value) 
     {
         if (value == 0)
         {
@@ -130,16 +130,9 @@ public static class Utility
 
         return Math.Truncate((value / (a / powv)) * 100) / 100 + Unit[count - 2];
     }
-    public static string DoubleToString_Value(this string value) //꼬리 2개 표시할꺼
-    {
-        return "X" + DoubleToString(float.Parse(value));
-    }
-    public static string DoubleToString_Value(this float value) //표시할꺼
-    {
-        return "X" + DoubleToString(value);
-    }
 
     #endregion
+    
     #region Time
 
     public static string Time_MinuteToTime(this int minute)
@@ -163,7 +156,6 @@ public static class Utility
         }
                
     }
-
     public static string Time_SecendToTime(this int secend)
     {
         string result="";
@@ -185,126 +177,8 @@ public static class Utility
     }
     #endregion
     
-    public static string[] DataTextToStringList(string Asset,char a)
-    {
-        return Asset.Split(a);
-    }
-
-    /*
-        사이즈 다른 2개를 정사이즈로 배치
-        다음 프레임에서 해야해서 코루틴으로함 contantsizefitter
-        오른쪽에 텍스트배치[크기 움직이는친구]
-        조건
-        1.2개다 acnchor 건들지말고 [0.5고정] y 크기 위치 맞추고 딱 붙혀놓고
-        2.가변[보통 text 갯지?] 인친구에 content size fitter 넣어놓기
-     */
-    public static void ReSize_StaticSizeObjectNearBatch(RectTransform left,RectTransform right) 
-    {
-
-        if (right.sizeDelta.x <= left.sizeDelta.x) //텍스트 크기가 이미지 크키보다 작거나 같을때
-        {
-            var sizeDelta = left.sizeDelta;
-            right.localPosition = new Vector2(sizeDelta.x/2, right.localPosition.y);
-            left.localPosition = new Vector2(-sizeDelta.x / 2,
-                left.localPosition.y);
-        }
-        else //텍스트가 더 길때
-        {
-            var totalsize = (right.sizeDelta.x + left.sizeDelta.x)/2;
-            right.localPosition = new Vector2(left.sizeDelta.x/2, right.localPosition.y);
-            left.localPosition = new Vector2(-right.sizeDelta.x/2, left.localPosition.y);
-            
-        }
-    }
-
-    public static IEnumerator AfterFrame(Action afterProcess)
-    {
-        yield return WaitFrame;
-        afterProcess?.Invoke();
-    }
-    
-    #region 이번게임만
-    
-    public static string Main_RePlaceInfo_CharacterInFoDamage(string info, float damage,int attackCound) //스킬설명 바꾸기
-    {
-        return info.Replace("D",  "("+Utility.DoubleToString(damage)+"% X"+attackCound+")로\n");
-    }
-
-    public static float Main_Return_CharacterInfoDamageTreasuer(float FirstData, float level) // 스킬레벨, 스킬데미지로 바꾸기
-    {
-        return FirstData + level * 0.1f * FirstData;
-    }
-
-    public static string Main_Return_CahracterInfoStory(string data)
-    {
-        string dd= data.Replace("A", "\n");
-        return dd.Replace("B", "\n");
-    }
-
-    public static float Main_Return_DootResetCoast(float UsingPoint)
-    {
-        if (UsingPoint < 10)
-            return 1;
-        else if (UsingPoint < 20)
-            return 3;
-        else if (UsingPoint < 50)
-            return 10;
-        else if (UsingPoint < 100)
-            return 30;
-        else
-        {
-            return 100;
-        }
-    }
-
-    public static string Return_ChapterScore(float Level)
-    {
-        int floatlevel = (int)Level;
-        string chapter = ((floatlevel / 30)+1).ToString();
-        string Deficult = ((floatlevel % 30)+1).ToString();
-        return chapter + "-" + Deficult;
-    }
-    #region main 쪽 표시되는거
-    public static float Return_Damage(float var)
-    {
-        return var;
-    }
-    public static float Return_CoolTime(float var) 
-    {
-        return ((1 - (var / (var + 50))));
-    }
-
-    public static float Return_CriDamage(float var)
-    {
-        return var;
-    }
-    public static float Return_CirPerCent(float var) 
-    {
-        return (1 - (40 / (40 + var))) * 100;
-    }
-    public static float Return_Damage_Ui(float var)
-    {
-        return var;
-    }
-    public static string Return_CriDamage_Ui(float var)
-    {
-        return var*100+"%";
-    }
-
-    public static string Return_Cooltime_Ui(float var) //표시될값
-    {
-        return ((1 - ((1 - (var / (var + 50))))) * 100).ToString("N1")+"%";
-    }
-
-    public static string Return_CriPercent_Ui(float var) //표시될 값
-    {
-        return ((1 - (40 / (40 + var))) * 100).ToString("N1")+"%";
-    }
-    #endregion
-    //ui 표시
-    
-    #region  주차구하기
-    public static int Return_RateWeekData(DateTime date)
+    #region WeekDay
+    public static int WeekDay(DateTime date)
     {
         DateTime a = date.LastDateOfWeek();
 
@@ -328,13 +202,36 @@ public static class Utility
         {
             day = a.Day;
         }
+
         return year + month + day;
     }
     #endregion
+
+    #region C_ReSize_StaticSizeObjectNearBatch
+    public static IEnumerator C_ReSize_StaticSizeObjectNearBatch(string TargetText,Image leftImage,Text rightText)
+    {
+        rightText.text = TargetText;
+        yield return WaitFrame;
+        if (rightText.rectTransform.sizeDelta.x <= leftImage.rectTransform.sizeDelta.x) //텍스트 크기가 이미지 크키보다 작거나 같을때
+        {
+            var sizeDelta = leftImage.rectTransform.sizeDelta;
+            rightText.rectTransform.localPosition = new Vector2(sizeDelta.x/2, rightText.rectTransform.localPosition.y);
+            leftImage.rectTransform.localPosition = new Vector2(-sizeDelta.x / 2,
+                leftImage.rectTransform.localPosition.y);
+        }
+        else //텍스트가 더 길때
+        {
+            var totalsize = (rightText.rectTransform.sizeDelta.x + leftImage.rectTransform.sizeDelta.x)/2;
+            rightText.rectTransform.localPosition = new Vector2(leftImage.rectTransform.sizeDelta.x/2, rightText.rectTransform.localPosition.y);
+            leftImage.rectTransform.localPosition = new Vector2(-rightText.rectTransform.sizeDelta.x/2, leftImage.rectTransform.localPosition.y);
+        }
+
+    }
     #endregion
 
 
 }
+    
 
 public static class DateTimeExt
 {
@@ -356,9 +253,9 @@ public static class DateTimeExt
     }
 }
 
-
 public static class ListExt
 {
+    
     // O(1) 
     public static void RemoveBySwap<T>(this List<T> list, int index)
     {
