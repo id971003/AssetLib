@@ -316,35 +316,9 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
  ```
  
  ***
- # Utility
+ # Utility [Update 12-31]
  나머지 잡다한거 모아논거 static 클래스임
- 
- * 정렬 : quick정렬이용해놈
- * Waitfor : WaitForSeconds 캐싱해놈 readonly 로해놨음 더추가해서 쓰면됨
- * ValueTounit 꼬리표 : 단위 설정할거임 ex) 1.5a 1.7a 등
-   * Unit : 단위 적어주면됨
-   * devicevAlue : 몇개단위로 끊을껀지 ex) 3이면 1000 > 1.0a 됨 
-```
-public static readonly string[] Unit =
-{
-    "a", 
-    "b",
-    "c",
-    "d"
-    };
-private static readonly int devicevAlue = 3;
-double kk = 1334;
-Debug.Log(kk.DoubleToString()); > 1.33a
- ```
- * Time_SecendToTime : 초를 시간으로 
- ```
- int kk = 12345;
-Debug.Log(kk.Time_SecendToTime()); > 3시간 25분 45초
- ```
-  * Time_MinuteToTime : 분을 시간으로
- ```
-int kk = 12345;
-Debug.Log(kk.Time_MinuteToTime()); > 205시간 45분
- ```
- 
+
+ *WaitForSceond  
+ 코루틴할때 waitforsecond 나 딜레이를 주는 경우가 많은데이거 미리 캐싱해서 이용한다. 미리 만들어 놓으면 new 를 덜 호출해 메모리적으로 안정적이라고한다.
 
