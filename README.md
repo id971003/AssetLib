@@ -217,72 +217,82 @@ ObjectPoolObject : 모든 풀링할 오브젝트 들이 상속받아쓸 추상 �
 1-7 일 기준으로 내가 데이터를 저장할때는 클래스하나를 json 화 시켜서 저장한다 그래서 저장되는 모든데이터를 가지고있는 클레스 하나를 Serializable 해서 가지고 다니면서 바꾸고 저장하고 할생각임  
 Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 제대로 안들어간다 다시한번 캐싱해줘야한다  
 ***
- # GoogleSheetManager
+ # GoogleSheetManager [Update 2023-12-30]
  조건 : singleton  
- 세팅 : SheetURL[구글스프레드시트] , SheetDataURL[데이터 받아올시트 "SheetDataURL" d이후부터 export 이전까지 세팅해놔야함]  
+ 세팅  
+    SheetURL[구글스프레드시트] : AppsScprie 의 배포 > 웹앱 >URL  
+    SheetDataURL[데이터 받아올시트 "SheetDataURL" 이후부터 export 이전까지 세팅해놔야함] 스프래드 시트 링크 + 범위  
+    [edit 전까지 + 불러올 시트 범위 export?format=tsv&range=A2:B]    
+
+   
  구글 스프레드 시트와 연동하는 코드임    
- 유저들이 다른 유저 정보 볼 수있는 혹은 자기꺼 저장해서 남한테 보여주는기능[ex 랭킹] 등 간단한 정보를 웹에 뿌려 사용할때 쓸꺼임    
+ 웹에 데이터 단순히 뿌리고 받아오고 하지말고 비슷하고 다루시 쉬운 googlesheet 통해서 뿌리고 받아오는거  
  라이브러리화 시키고싶은데 워낙 수정이 많을 것 같아서 이후 수정하기 용이한 정도만 구현 해놈   
  GoogleData 클래스에서 뭐 얻을지 설정하고 구글 스프레드시트 apps script 에서 수정해 이용하자   
 
 ##### Post : 실제 통신 일어나는 곳임 
 ```
-     IEnumerator Post(WWWForm form,Action<bool,string> afterProcess=null) //등록
+  IEnumerator Post(WWWForm form,Action<bool,string> afterProcess)
     {
         using (UnityWebRequest www = UnityWebRequest.Post(SheetURL, form))
         {
             yield return www.SendWebRequest();
-            if (www.isDone) Response(www.downloadHandler.text, afterProcess);
-            else afterProcess?.Invoke(false,"PostFAil");
+
+            if (www.isDone)
+            {
+                print(www.downloadHandler.text);
+                GD = JsonUtility.FromJson<GoogleData>(www.downloadHandler.text);
+                if (GD.result=="T")
+                {
+                    afterProcess?.Invoke(true,"성공");    
+                }
+                else
+                {
+                    afterProcess?.Invoke(false,"실패");
+                }
+                
+            }
+            else
+            {
+                print("웹응답없음");
+            }
         }
     }
  ```
- 
-##### Response : ProcessGoogleData.ordr 타입에 따라 뭐 할지 설정해 놓자 일단 로그인,회원가입 만해놈
- ```
-     void Response(string json, Action<bool, string> afterProcess=null)
-    {
-        if (string.IsNullOrEmpty(json))
-        {
-            afterProcess?.Invoke(false,"데이터가없는걸");
-            return;
-        }
-        Debug.Log(json);
-        ProcessGoogleData = JsonUtility.FromJson<GoogleData>(json);
-        switch (ProcessGoogleData.order)
-        {
-            case  "login":
-                if (ProcessGoogleData.result == "T")
-                {
-                    afterProcess?.Invoke(true,ProcessGoogleData.value);
-                }
-                else if(ProcessGoogleData.result=="F")
-                {
-                    afterProcess.Invoke(false,ProcessGoogleData.message);
-                }
-                break;
-            case "register":
-                if (ProcessGoogleData.result == "T")
-                {
-                    afterProcess?.Invoke(true,ProcessGoogleData.message);
-                }
-                else if(ProcessGoogleData.result=="F")
-                {
-                    afterProcess.Invoke(false,ProcessGoogleData.message);
-                }
-                break;
-            case  "reRegister":
-                if (ProcessGoogleData.result == "T")
-                {
-                    afterProcess?.Invoke(true,ProcessGoogleData.message);
-                }
-                else if(ProcessGoogleData.result=="F")
-                {
-                    afterProcess.Invoke(false,ProcessGoogleData.message);
-                }
-                break;
 
-        }
+##### Login : 로그인 
+
+ ```
+    public void Login(string NickName, Action<bool, string> afterProcess = null)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("order","login");
+        form.AddField("nickname",NickName);
+
+        StartCoroutine(Post(form,afterProcess));
+    }
+ ```
+##### Register : 회원가입
+ ```
+    public void Register(string NickName,string data,Action<bool,string> afterProcess=null)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("order","register");
+        form.AddField("nickname",NickName);
+        form.AddField("value",data);
+        StartCoroutine(Post(form,afterProcess));
+    }
+ ```
+##### Reregister : 정보재등록
+ ```
+    public void Reregister(string Nickname, string value, Action<bool, string> afterProcess = null)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("order","reregister");
+        form.AddField("nickname",Nickname);
+        form.AddField("value",value);
+
+        StartCoroutine(Post(form,afterProcess));
     }
  ```
 ##### C_LoadData : 데이터 받아오는 코드 캐싱해서 사용하면됨  
