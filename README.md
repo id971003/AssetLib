@@ -323,14 +323,14 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
  코루틴할때 waitforsecond 나 딜레이를 주는 경우가 많은데이거 미리 캐싱해서 이용한다. 미리 만들어 놓으면 new 를 덜 호출해 메모리적으로 안정적이라고한다.
  * SortListSomthingValue  
  어떤 타입의 리스트가 있을때 그 리스트를 어떤 값을 기준으로 정렬하는 메서드다.
- * ValueToUnit
+ * ValueToUnit  
  수에 자리수 넣기 ( ex 123456 > 1.23만) 소숫점 2개까지 나오게해줌
- * Time
+ * Time  
  Time_MinuteToTime : 분 > 시간+분 [364분 > 6시간 4분 ]
  Time_SecendToTime : 초 > 시간+분+초 [364초 > 6분 4초]
- * WeekDay
+ * WeekDay  
  DateTime 기준으로 다음주 월요일 계산 [LastDateOfWeek 의 addday 6이면 월요일 7이면 화요일 ...]
- * C_ReSize_StaticSizeObjectNearBatch
+ * C_ReSize_StaticSizeObjectNearBatch  
  재화이미지에 수량이 표기될때 둘을 가운데 정렬하는  친구임
  
 
