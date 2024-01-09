@@ -225,7 +225,6 @@ public static class Utility
             rightText.rectTransform.localPosition = new Vector2(leftImage.rectTransform.sizeDelta.x/2, rightText.rectTransform.localPosition.y);
             leftImage.rectTransform.localPosition = new Vector2(-rightText.rectTransform.sizeDelta.x/2, leftImage.rectTransform.localPosition.y);
         }
-
     }
     #endregion
 

@@ -5,7 +5,8 @@
 싱글톤이다  
 조건 : Odin, 상속  
 세팅 : SINGLETONTYPE[Dontdestroy 할껀지 안할껀지]  
-ex) public class kk : SINGLETON<kk,SINGLETONE.SINGLETONEType.DoNotDontDestroy>  
+ex) public class TestManager : SINGLETON<TestManager,SINGLETONE.SINGLETONEType.DontDestroy>  
+ex) public class TestManager : SINGLETON<TestManager,SINGLETONE.SINGLETONEType.DoNotDontDestroy>  
 끌고 다니고 [dontdestroy] 싶으면 SINGLETONEType을 dontdestroy로 하자  
 상속받은친구에 Awake 에 base.Awake 넣어주자  
 오딘안쓸꺼면 SerializedMonoBehaviour 대신 MonoBehaviour상속시키면됨
@@ -37,10 +38,6 @@ gpt 한태물어보니 특정함수보다[3번] 이악물고 Start[4번] 가 먼
 using Ns_SINGLETONE;
 using Sirenix.OdinInspector;
 using UnityEngine;
-
-
-
-
 namespace Ns_SINGLETONE
 {
     public enum SINGLETONE_TYPE

@@ -22,19 +22,16 @@ using Unity.Mathematics;
 
 public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.DoNotDontDestroy>
 {
-    private string filePath=@"Assets\AssetLib\Lib\ObjectPooler\OBJECTPOOL.cs";
-    private readonly string message = "namespace OBJECTPOOL { public enum ObjectPool {";
-    private readonly string message2 = "}}\n";
-
-    private string PrefabPath = "ObjectPool";
 
     [SerializeField] Dictionary<ObjectPool, Queue<GameObject>> Dic_NameToQueueGameObject = new Dictionary<ObjectPool, Queue<GameObject>>();
     [SerializeField] Dictionary<ObjectPool, GameObject> Dic_NameToPreFab = new Dictionary<ObjectPool, GameObject>();
 
+    private string filePath = @"Assets\AssetLib\Lib\ObjectPooler\OBJECTPOOL.cs";
+    private readonly string message = "namespace OBJECTPOOL { public enum ObjectPool {";
+    private readonly string message2 = "}}\n";
 
+    private string PrefabPath = "ObjectPool";
     #region init
-    
-    [Button]
     void Init_EnumType()
     {        
         FileStream fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
@@ -62,18 +59,10 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
         writer.WriteLine(message2);
         writer.Close();
         fileStream.Close();
-
-        
-
-        
-
 #if UNITY_EDITOR
         AssetDatabase.Refresh();
         #endif
     }
-    
-    
-        
     [Button]
     void Init_Object()
     {
