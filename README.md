@@ -18,7 +18,7 @@ update 12.14 내가만든 뭔가를 쓰는데 에셋이나 다른 라이브러�
   * ObjectPooler [Update 2023-12-21]  
   * DatasManager [Update 2023-12-27]  
   * GoogleSheetManager  [Update 2023-12-30]
-  * GpgsStorageHelper  //나중에할꺼임
+  * GpgsStorageHelper  [Update 2024-01-09]  
   * Utility [Update 2023-12-31]     
   
   
@@ -314,7 +314,9 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
         }
     }
  ```
- 
+  ***
+#  GpgsStorageHelper[Update 2023-01-09]  
+
  ***
  # Utility [Update 2023-12-31]
  나머지 잡다한거 모아논거 static 클래스임
