@@ -368,19 +368,19 @@ private void ProcessEnd_Succes(string message, string data)
         isProsses = false;
     }
 ```
-로그인  
+ * 로그인  
 ```
     public void Auto_Login(Action<bool, string> logined) //시작 시 자동 로그인
 
     public void Menual_Login(Action<bool, string> logined) //로그인 안됬으면 강제 로그인
 ```
 
-세이브(세이브할 데이터 , (성공여부 , 메시지))
+ * 세이브(세이브할 데이터 , (성공여부 , 메시지))
 ```
  public void SavedGame_Save(string saveData, Action<bool, string> saveed = null)
 ```
   
-로드(성공여부 , 메시지, 데이터)  
+ * 로드(성공여부 , 메시지, 데이터)  
 ```
 public void SavedGame_Load(Action<bool, string, string> loaded)
 ```
