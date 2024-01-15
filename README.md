@@ -18,7 +18,7 @@ update 12.14 내가만든 뭔가를 쓰는데 에셋이나 다른 라이브러�
   * ObjectPooler [Update 2023-12-21]  
   * DatasManager [Update 2023-12-27]  
   * GoogleSheetManager  [Update 2023-12-30]
-  * GpgsStorageHelper  //나중에할꺼임
+  * GpgsStorageHelper  [Update 2024-01-09]  
   * Utility [Update 2023-12-31]     
   
   
@@ -314,7 +314,77 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
         }
     }
  ```
- 
+  ***
+#  GpgsStorageHelper[Update 2023-01-09]  
+ Gpgs[GooglePlayGame] 이용한 세이브 로드 만들어놨다  
+ 동작을 하나만 할 수 있게 해놨다  
+ ```
+    private bool Process(Action<bool, string> afterProcessing=null)
+    {
+        if (isProsses)
+        {
+            afterProcessing?.Invoke(false,"뭔가작동중임");
+            return false;
+        }
+
+        isProsses = true;
+        StartCoroutine(C_Process(afterProcessing));
+        return true;
+    }
+    private bool Process(Action<bool,string, string> afterProcessing)
+    {
+        if (isProsses)
+        {
+            afterProcessing?.Invoke(false,null, "뭔가작동중임");
+            return false;
+        }
+        isProsses = true;
+        StartCoroutine(C_Process(afterProcessing));
+        return true;
+    }
+```
+어디서 오류났는지 메시지로 전달해줌  
+```
+private void ProcessEnd_Succes(string message, string data)
+    {
+        RETURNDATA_STATUS = true;
+        RETURNDATA_MESSAGE = message;
+        RETURNDATA_DATA = data;
+        isProsses = false;
+    }
+    private void ProcessEnd_Succes(string message)
+    {
+        RETURNDATA_STATUS = true;
+        RETURNDATA_MESSAGE = message;
+        RETURNDATA_DATA = null;
+        isProsses = false;
+    }
+
+    private void ProcessEnd_Fail(string message)
+    {
+        RETURNDATA_STATUS = false;
+        RETURNDATA_DATA = null;
+        RETURNDATA_MESSAGE = message;
+        isProsses = false;
+    }
+```
+ * 로그인  
+```
+    public void Auto_Login(Action<bool, string> logined) //시작 시 자동 로그인
+
+    public void Menual_Login(Action<bool, string> logined) //로그인 안됬으면 강제 로그인
+```
+
+ * 세이브(세이브할 데이터 , (성공여부 , 메시지))
+```
+ public void SavedGame_Save(string saveData, Action<bool, string> saveed = null)
+```
+  
+ * 로드(성공여부 , 메시지, 데이터)  
+```
+public void SavedGame_Load(Action<bool, string, string> loaded)
+```
+
  ***
  # Utility [Update 2023-12-31]
  나머지 잡다한거 모아논거 static 클래스임
