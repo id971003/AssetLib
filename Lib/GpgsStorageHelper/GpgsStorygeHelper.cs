@@ -74,7 +74,6 @@ public class GpgsStorygeHelper : SINGLETON<GpgsStorygeHelper,Ns_SINGLETONE.SINGL
         isProsses = true;
         StartCoroutine(C_Process(afterProcessing));
         return true;
-
     }
     IEnumerator C_Process(Action<bool,string> afterProcessing=null)
     {
@@ -160,7 +159,39 @@ public class GpgsStorygeHelper : SINGLETON<GpgsStorygeHelper,Ns_SINGLETONE.SINGL
         {
             if (status == SignInStatus.Success)
             {
+                SavedGame_Load("deviceId", (a, b) =>
+                {
+
+
+                });
                 ProcessEnd_Succes("자동 로그인 성공");
+                
+            }
+            else
+            {
+                ProcessEnd_Fail("자동 로그인 실패");
+            }
+        });
+    }
+
+    public void DevieceCheck_Login(Action<bool, string> logined)
+    {
+        if (!Process(logined))
+        {
+            return;
+        }
+
+        if (IsAuthenticated)
+        {
+            ProcessEnd_Fail("이미 로그인 됨");
+            return;
+        }
+        PlayGamesPlatform.Instance.ManuallyAuthenticate((status) =>
+        {
+            if (status == SignInStatus.Success)
+            {
+                ProcessEnd_Succes("자동 로그인 성공");
+                
             }
             else
             {
