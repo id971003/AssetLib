@@ -2,15 +2,15 @@ using UnityEngine;
 using System.IO;
 using System;
 
-public class LocalStorageHelper : SINGLETON<LocalStorageHelper, Ns_SINGLETONE.SINGLETONEType.DontDestroy>
+public static class LocalStorageHelper
 {
-    private string Message
+    private static string Message
     {
         get;
         set;
         
     }
-    public void SaveLocalStorage(string filename,string jsondata,Action<bool,string> OnSave=null) //특정 string 값을 저장 
+    public static void SaveLocalStorage(string filename,string jsondata,Action<bool,string> OnSave=null) //특정 string 값을 저장 
     {   
         string path = Path.Combine(Application.persistentDataPath, filename);
         if (path == "")
@@ -26,7 +26,7 @@ public class LocalStorageHelper : SINGLETON<LocalStorageHelper, Ns_SINGLETONE.SI
 
     }
 
-    public void LoadLocalStorage(string filename, Action<bool,string,string> OnLoad = null) // 저장된 값(Json)을 불러옴
+    public static void LoadLocalStorage(string filename, Action<bool,string,string> OnLoad = null) // 저장된 값(Json)을 불러옴
     {
         string path = Path.Combine(Application.persistentDataPath, filename);
         if (path == "")

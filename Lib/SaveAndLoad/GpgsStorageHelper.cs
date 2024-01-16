@@ -1,4 +1,184 @@
 
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+#if UNITY_ANDROID
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using GooglePlayGames.BasicApi.SavedGame;
+#endif
+
+public static class GpgsStorageHelper 
+{
+    static PlayGamesPlatform PlayGAmesPlatformref = PlayGamesPlatform.Instance;
+    private static  bool IsAuthenticated
+    {
+        get
+        {
+            return PlayGAmesPlatformref.IsAuthenticated();
+        }
+    }
+    
+    static ISavedGameClient  SavedGame =>
+        PlayGAmesPlatformref.SavedGame;
+
+    public static void Auto_Login(Action<bool, string> logined=null) //시작 시 자동 로그인
+    {
+        PlayGamesPlatform.Instance.Authenticate((status) =>
+        {
+            if (status == SignInStatus.Success)
+            {
+                logined(true,"로그인 성공");
+            }
+            else
+            {
+                logined?.Invoke(false,"Auto_Login : SignInStatus fail로그인 실패");
+            }
+        });
+    }
+    public static void Menual_Login(Action<bool, string> logined=null) //로그인 안됬으면 강제 로그인
+    {
+        if (IsAuthenticated)
+        {
+            logined(false,"이미 로그인 됨");
+            return;
+        }
+        PlayGamesPlatform.Instance.ManuallyAuthenticate((status) =>
+        {
+            if (status == SignInStatus.Success)
+            {
+                logined?.Invoke(true,"로그인 성공");
+            }
+            else
+            {
+                logined?.Invoke(false,"Menual_Login : SignInStatus fail로그인 실패");
+            }
+        });
+    }
+    public static void DevieceCheck_Login(Action<bool, string> logined) //로그인 안됬으면 강제 로그인 (미완성)
+    {
+        if (IsAuthenticated)
+        {
+            logined(false,"이미 로그인 됨");
+            return;
+        }
+        PlayGamesPlatform.Instance.ManuallyAuthenticate((status) =>
+        {
+            if (status == SignInStatus.Success)
+            {
+                logined?.Invoke(true,"로그인 성공");
+            }
+            else
+            {
+                logined?.Invoke(false,"DevieceCheck_Login : SignInStatus fail로그인 실패");
+            }
+        });
+    }
+    #region Save
+    public static void SavedGame_Save(string saveData, Action<bool, string> saveed = null)
+    {
+        if (!IsAuthenticated)
+        {
+            Debug.Log("로그인안됨");
+            return;
+        }
+
+        SaveGmae_Save("gamedata", saveData, (status,message) =>
+        {
+            if (status)
+            {
+                saveed?.Invoke(true, "저장 성공");
+            }
+            else
+            {
+                saveed?.Invoke(false, message);
+            }
+        });
+    }
+    static void SaveGmae_Save(string filename, string saveData, Action<bool, string> onSaved = null)
+    {
+        SavedGame.OpenWithAutomaticConflictResolution(filename, DataSource.ReadCacheOrNetwork,
+            ConflictResolutionStrategy.UseLongestPlaytime, (status, game) =>
+            {
+                if (status == SavedGameRequestStatus.Success)
+                {
+                    SavedGameMetadataUpdate.Builder builder = new SavedGameMetadataUpdate.Builder();
+                    SavedGameMetadataUpdate updatedMetadata = builder.Build();
+                    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(saveData);
+                    SavedGame.CommitUpdate(game, updatedMetadata, bytes, (status, game) =>
+                    {
+                        if (status == SavedGameRequestStatus.Success)
+                        {
+                            onSaved?.Invoke(true, null);
+                        }
+                        else
+                        {
+                            onSaved?.Invoke(false, "SaveGame_Save : fail");
+                        }
+                    });
+                }
+                else
+                {
+                    onSaved?.Invoke(false, "SaveGame_Save : fail");
+                }
+            });
+    }
+    #endregion
+
+    #region Load
+    public static void SavedGame_Load(Action<bool, string, string> loaded)
+    {
+        if (!IsAuthenticated)
+        {
+            Debug.Log("로그인안됨");
+            return;
+        }
+
+
+
+        SavedGame_Load("gamedata", (status, data,message) =>
+        {
+            if (status)
+            {
+                loaded?.Invoke(true, data,message);
+            }
+            else
+            {
+                loaded?.Invoke(false, null,message);
+            }
+        });
+    }
+    static void SavedGame_Load(string filename, Action<bool, string,string> onLoaded = null)
+    {
+        SavedGame.OpenWithAutomaticConflictResolution(filename, DataSource.ReadCacheOrNetwork,
+            ConflictResolutionStrategy.UseLongestPlaytime, (status, game) =>
+            {
+                if (status == SavedGameRequestStatus.Success)
+                {
+                    SavedGame.ReadBinaryData(game, (status2, loadedData) =>
+                    {
+                        if (status2 == SavedGameRequestStatus.Success)
+                        {
+                            string data = System.Text.Encoding.UTF8.GetString(loadedData);
+                            onLoaded?.Invoke(true, data,null);
+                        }
+                        else
+                        {
+                            onLoaded?.Invoke(false, null,"SavedGame_Load : fail");
+                        }
+                    });
+                }
+                else
+                {
+                    onLoaded?.Invoke(false, null,"SavedGame_Load : fail");
+                }
+            });
+    }
+    #endregion
+}
+/* OldCode
+
 
 
 using System.Collections;
@@ -320,3 +500,4 @@ public class GpgsStorygeHelper : SINGLETON<GpgsStorygeHelper,Ns_SINGLETONE.SINGL
 #endif
 }
 
+*/

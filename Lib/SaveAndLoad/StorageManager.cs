@@ -8,8 +8,8 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
 {
     #region 참조
 
-    private GpgsStorygeHelper GpgsStorygeHelperref;
-    private LocalStorageHelper LocalStorageHelperref;
+    
+    
 
     #endregion
     #region 프로세스
@@ -74,7 +74,11 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
 
     #endregion
 
-    public void SaveData(bool b_local, string filename, string savedata, Action<bool, string> onSave)
+    #region Local 저장파일이름
+
+    private readonly string LocalSaveFileName="FileName";
+    #endregion
+    public void SaveData(bool b_local,  string savedata, Action<bool, string> onSave)
     {
         if (b_local) //로컬 저장
         {
@@ -83,7 +87,12 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
                 return;
             }
 
-            LocalStorageHelperref.SaveLocalStorage(filename, savedata);
+            LocalStorageHelper.SaveLocalStorage(LocalSaveFileName, savedata, (a,b) =>
+            {
+                RETURNDATA_STATUS = a;
+                RETURNDATA_MESSAGE = b;
+                isProsses = false;
+            });
         }
         else //클라우드저장
         {
@@ -93,7 +102,12 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
             }
 
 #if UNITY_ANDROID
-
+            GpgsStorageHelper.SavedGame_Save(savedata, (a, b) =>
+            {
+                RETURNDATA_STATUS = a;
+                RETURNDATA_MESSAGE = b;
+                isProsses = false;
+            });
 #endif
 #if UNITY_IOS
 
@@ -102,7 +116,7 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
     }
 
 
-    public void LoadData(bool b_local, string filename, Action<bool, string, string> onLoad = null)
+    public void LoadData(bool b_local, Action<bool, string, string> onLoad = null)
     {
         if (b_local) //로컬 저장
         {
@@ -111,7 +125,13 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
                 return;
             }
 
-
+            LocalStorageHelper.LoadLocalStorage(LocalSaveFileName, (a,b,c) =>
+            {
+                RETURNDATA_STATUS = a;
+                RETURNDATA_DATA = b;
+                RETURNDATA_MESSAGE = c;
+                isProsses = false;
+            });
         }
         else //클라우드저장
         {
@@ -120,7 +140,13 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
                 return;
             }
 #if UNITY_ANDROID
-
+            GpgsStorageHelper.SavedGame_Load( (a,b,c) =>
+            {
+                RETURNDATA_STATUS = a;
+                RETURNDATA_DATA = b;
+                RETURNDATA_MESSAGE = c;
+                isProsses = false;
+            });
 #endif
 #if UNITY_IOS
 
@@ -131,6 +157,6 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
     protected override void Awake()
     {
         base.Awake();
-        GpgsStorygeHelperref = GpgsStorygeHelper.Instance;
+        
     }
 }
