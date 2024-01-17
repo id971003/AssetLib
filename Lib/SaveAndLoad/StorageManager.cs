@@ -1,17 +1,46 @@
+/*
+made 7rzr 2024-1-17
+데이터 저장 매니저 정도임
+
+Local , Android 정도로 나눠서 저장할거 + 이후 딴거 추가
+
+StorageManager 는 싱글톤 나머지 는 Static 으로 접근해서 저장
+
+기본로직
+비동기로 넘기는게 많다보니 뭔가 진행중 뭔가 돌아가는거 막으려고 로직하나 만듬
+
+isProsses : 이거 true 면 뭔가 진행중임
+
+RETURNDATA_STATUS : 성공 or 실패 반환
+
+RETURNDATA_MESSAGE : 실패 메시지 반환
+
+RETURNDATA_DATA : 로드시 데이터 반환
+
+위 4개 기반으로 뭔가 다른 플렛폼 저장할때 만들어서 추가해주면됨
+
+Login : storage manager 에 로그인이 있어도 될지 모르겠지만  저장하려면 로그인해야 하니까 넣어놈
+(나중에 분리할수도?)
+
+SaveData : 데이터 저장 
+
+LoadData : 데이터 로드
+ */
+
+
+
+
 using UnityEngine;
 using System.IO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
 public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONEType.DontDestroy>
 {
-    #region 참조
-
-    
-    
-
-    #endregion
+        
     #region 프로세스
 
     private readonly WaitForSeconds wait01 = new WaitForSeconds(0.1f);
@@ -78,6 +107,20 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
 
     private readonly string LocalSaveFileName="FileName";
     #endregion
+
+    public void Gpgs_Login(Action<bool, string> logined = null)
+    {
+        if (!Process(logined))
+        {
+            return;
+        }
+        
+        GpgsStorageHelper.Menual_Login((status,message) =>
+        {
+            isProsses = false;
+        });
+    }
+    
     public void SaveData(bool b_local,  string savedata, Action<bool, string> onSave)
     {
         if (b_local) //로컬 저장
@@ -154,6 +197,8 @@ public class StorageManager : SINGLETON<StorageManager, Ns_SINGLETONE.SINGLETONE
         }
     }
 
+    
+    
     protected override void Awake()
     {
         base.Awake();

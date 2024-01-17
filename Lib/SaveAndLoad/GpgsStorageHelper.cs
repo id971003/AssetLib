@@ -1,3 +1,14 @@
+/*
+made 7rzr 2023-1-28
+android 플랫폼 중 googlePlayGame 에 로그인 , 세이브 , 로드 구현해놓음 
+StorageManager 포멧 따라감
+
+저장 로드 filename 은  storageManager 에서 설정해줌
+
+SaveLocalStorage : 데이터 저장 , 이후 콜벡  ( 성공 실패 ? , 실패 메시지)
+
+LoadLocalStorage : 데이터 로드  이후콜백 ( 성공 실패 ? , 데이터 , 실패 메시지)
+*/
 
 using System.Collections;
 using System.Collections.Generic;

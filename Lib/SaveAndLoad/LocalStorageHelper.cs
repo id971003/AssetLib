@@ -1,3 +1,15 @@
+/*
+made 7rzr 2024-1-14
+로컬 저장 하는거임
+StorageManager 포멧 따라감
+
+저장 로드 filename 은  storageManager 에서 설정해줌
+
+SaveLocalStorage : 데이터 저장 , 이후 콜벡  ( 성공 실패 ? , 실패 메시지)
+
+LoadLocalStorage : 데이터 로드  이후콜백 ( 성공 실패 ? , 데이터 , 실패 메시지)
+*/
+
 using UnityEngine;
 using System.IO;
 using System;
@@ -8,7 +20,7 @@ public static class LocalStorageHelper
     {
         get;
         set;
-        
+            
     }
     public static void SaveLocalStorage(string filename,string jsondata,Action<bool,string> OnSave=null) //특정 string 값을 저장 
     {   
