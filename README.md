@@ -319,8 +319,8 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
  각 플랫폼 별 저장 기능을 만들어 놓았고 새로운게 추가되면 여기에 끼워 붙일 꺼다.  
  구조  
  StorageManager  
-  LocalStorageHelper : 로컬저장  
-  GpgsStorageHelper : Gpgs [Android] 저장  
+      LocalStorageHelper : 로컬저장  
+      GpgsStorageHelper : Gpgs [Android] 저장  
  동작을 하나만 할 수 있게 해놨다  
  ```
     private bool Process(Action<bool, string> afterProcessing=null)
