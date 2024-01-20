@@ -372,23 +372,85 @@ private void ProcessEnd_Succes(string message, string data)
         isProsses = false;
     }
 ```
- * 로그인  
-```
-    public void Auto_Login(Action<bool, string> logined) //시작 시 자동 로그인
 
-    public void Menual_Login(Action<bool, string> logined) //로그인 안됬으면 강제 로그인
+기본포멧은 위처럼 만들어주고 연결해주면된다
 ```
+    public void SaveData(bool b_local,  string savedata, Action<bool, string> onSave)
+    {
+        if (b_local) //로컬 저장
+        {
+            if (!Process(onSave))
+            {
+                return;
+            }
 
- * 세이브(세이브할 데이터 , (성공여부 , 메시지))
-```
- public void SavedGame_Save(string saveData, Action<bool, string> saveed = null)
-```
-  
- * 로드(성공여부 , 메시지, 데이터)  
-```
-public void SavedGame_Load(Action<bool, string, string> loaded)
-```
+            LocalStorageHelper.SaveLocalStorage(LocalSaveFileName, savedata, (a,b) =>
+            {
+                RETURNDATA_STATUS = a;
+                RETURNDATA_MESSAGE = b;
+                isProsses = false;
+            });
+        }
+        else //클라우드저장
+        {
+            if (!Process(onSave))
+            {
+                return;
+            }
 
+#if UNITY_ANDROID
+            GpgsStorageHelper.SavedGame_Save(savedata, (a, b) =>
+            {
+                RETURNDATA_STATUS = a;
+                RETURNDATA_MESSAGE = b;
+                isProsses = false;
+            });
+#endif
+#if UNITY_IOS
+
+#endif
+        }
+    }
+```
+```
+    public void LoadData(bool b_local, Action<bool, string, string> onLoad = null)
+    {
+        if (b_local) //로컬 저장
+        {
+            if (!Process(onLoad))
+            {
+                return;
+            }
+
+            LocalStorageHelper.LoadLocalStorage(LocalSaveFileName, (a,b,c) =>
+            {
+                RETURNDATA_STATUS = a;
+                RETURNDATA_DATA = b;
+                RETURNDATA_MESSAGE = c;
+                isProsses = false;
+            });
+        }
+        else //클라우드저장
+        {
+            if (!Process(onLoad))
+            {
+                return;
+            }
+#if UNITY_ANDROID
+            GpgsStorageHelper.SavedGame_Load( (a,b,c) =>
+            {
+                RETURNDATA_STATUS = a;
+                RETURNDATA_DATA = b;
+                RETURNDATA_MESSAGE = c;
+                isProsses = false;
+            });
+#endif
+#if UNITY_IOS
+
+#endif
+        }
+    }
+```
  ***
  # Utility [Update 2023-12-31]
  나머지 잡다한거 모아논거 static 클래스임
