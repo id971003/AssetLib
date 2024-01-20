@@ -18,7 +18,7 @@ update 12.14 내가만든 뭔가를 쓰는데 에셋이나 다른 라이브러�
   * ObjectPooler [Update 2023-12-21]  
   * DatasManager [Update 2023-12-27]  
   * GoogleSheetManager  [Update 2023-12-30]
-  * GpgsStorageHelper  [Update 2024-01-09]  
+  * StorageManager  [Update 2024-01-20]  
   * Utility [Update 2023-12-31]     
   
   
@@ -315,8 +315,8 @@ Datalist 를 캐싱했을때 후 로드 진행하면 datalistref.Value 값이 �
     }
  ```
   ***
-#  GpgsStorageHelper[Update 2023-01-09]  
- Gpgs[GooglePlayGame] 이용한 세이브 로드 만들어놨다  
+#  StorageManager[Update 2023-01-20]  
+ 각 플랫폼 별 저장 기능을 만들어 놓았고 새로운게 추가되면 여기에 끼워 붙일 꺼다 
  동작을 하나만 할 수 있게 해놨다  
  ```
     private bool Process(Action<bool, string> afterProcessing=null)
