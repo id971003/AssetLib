@@ -8,6 +8,12 @@ ObjectPooler.SpawnFormPool(ObjectPool.a,gameObject.transform.position);
 1. objectpool enum filepath 지정
 2. 풀링할 오브젝트들 있는 리소스폴더에 prefabpath 지정
 3. init 버튼 누르면 체크됨 안눌러도 ㄱㅊ
+
+
++Update 2024-02-05
+부모가 Destory 됬을때 문제가 좀있어 보수 고드 넣어놨다.
+ObjectPoolObject-OnDestoryParent
+ObjectPooler-returnpool 예외 코드 추가
 */
 using System;
 using System.Collections.Generic;
@@ -32,6 +38,7 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
 
     private string PrefabPath = "ObjectPool";
     #region init
+    [Button]
     void Init_EnumType()
     {        
         FileStream fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
@@ -212,8 +219,11 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
         
         if(!Instance.Dic_NameToQueueGameObject.ContainsKey(value))
             Debug.LogError("error = objectpooler return error"+obj.name);
-               
-        
+
+
+        if (Instance.Dic_NameToQueueGameObject[value].Contains(obj))
+            return;
+
         Instance.Dic_NameToQueueGameObject[value].Enqueue(obj);
     }
     
@@ -222,8 +232,8 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
     protected override void Awake()
     {
         base.Awake();
-        //Init_EnumType();
         Init_Object();
     }
+
     
 }

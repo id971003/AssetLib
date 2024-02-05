@@ -12,13 +12,27 @@ public abstract class ObjectPoolObject : MonoBehaviour
 {
     public abstract void SetUp();
 
-    
 
-    protected virtual void OnDisable()
+
+    void BackPool()
     {
-        
         ObjectPooler.ReturnToPool(gameObject);
         StopAllCoroutines();
         CancelInvoke();
+    }
+    protected virtual void OnDisable()
+    {
+        BackPool();
+    }
+
+    protected virtual void OnDestoryParent()
+    {
+        transform.SetParent(null);
+        gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        Debug.LogError("오브젝트 지워버리면 어뜨케");
     }
 }
