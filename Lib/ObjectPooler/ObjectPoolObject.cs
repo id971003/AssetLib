@@ -5,16 +5,26 @@ public class objectpooltest : ObjectPoolObject
  SetUp 오버라이딩 해서 사용
  
  
+ 
 */
+
+using System;
 using UnityEngine;
 
 public abstract class ObjectPoolObject : MonoBehaviour
 {
+    [SerializeField] private Transform Instance;
+
+    private void Awake()
+    {
+        Instance = ObjectPooler.Instance.transform;
+    }
+
     public abstract void SetUp();
 
 
-
-    void BackPool()
+    
+    protected void BackPool()
     {
         ObjectPooler.ReturnToPool(gameObject);
         StopAllCoroutines();
@@ -22,17 +32,13 @@ public abstract class ObjectPoolObject : MonoBehaviour
     }
     protected virtual void OnDisable()
     {
-        BackPool();
+        Invoke("BackPool",0);
     }
+    
 
-    protected virtual void OnDestoryParent()
+    public virtual void OnDestoryParent()
     {
-        transform.SetParent(null);
         gameObject.SetActive(false);
     }
-
-    private void OnDestroy()
-    {
-        Debug.LogError("오브젝트 지워버리면 어뜨케");
-    }
+    
 }

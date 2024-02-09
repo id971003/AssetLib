@@ -14,6 +14,11 @@ ObjectPooler.SpawnFormPool(ObjectPool.a,gameObject.transform.position);
 부모가 Destory 됬을때 문제가 좀있어 보수 고드 넣어놨다.
 ObjectPoolObject-OnDestoryParent
 ObjectPooler-returnpool 예외 코드 추가
+
+*Update 2024-02-09
+ReturnTopool 을 할때 돌아온친구들을 Pooler 자식으로 넣어주는 setParent 를해주고싶었다.
+근데 이걸 각오브젝트들에게 OnDisable 에서 실행하는데 오브젝트의 Active 가 꺼져있을때 계층구조를 바꿀수가 없어서
+풀링할 오브젝트들이 상복받는 ObjectPoolObject 에 BackPool을 Invoke 로 실행해줬다 나중에 문제생기면 바꾸면 되겠지
 */
 using System;
 using System.Collections.Generic;
@@ -144,6 +149,10 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
     {
         return Instance._SpawnFormPool(objectName, position, quaternion.identity);
     }
+    public static GameObject SpawnFormPool(ObjectPool objectName,GameObject parent)
+    {
+        return Instance._SpawnFormPool(objectName, parent);
+    }
     public static GameObject SpawnFormPool(ObjectPool objectName, Vector3 position,quaternion rotation)
     {
         return Instance._SpawnFormPool(objectName, position, rotation);
@@ -225,6 +234,7 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
             return;
 
         Instance.Dic_NameToQueueGameObject[value].Enqueue(obj);
+        obj.transform.SetParent(Instance.gameObject.transform);
     }
     
 
