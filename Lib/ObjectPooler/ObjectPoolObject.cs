@@ -26,6 +26,7 @@ public abstract class ObjectPoolObject : MonoBehaviour
     
     protected void BackPool()
     {
+        gameObject.SetActive(false);
         ObjectPooler.ReturnToPool(gameObject);
         StopAllCoroutines();
         CancelInvoke();
@@ -34,11 +35,5 @@ public abstract class ObjectPoolObject : MonoBehaviour
     {
         Invoke("BackPool",0);
     }
-    
 
-    public virtual void OnDestoryParent()
-    {
-        gameObject.SetActive(false);
-    }
-    
 }
