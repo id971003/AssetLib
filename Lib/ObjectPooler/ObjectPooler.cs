@@ -19,6 +19,11 @@ ObjectPooler-returnpool 예외 코드 추가
 ReturnTopool 을 할때 돌아온친구들을 Pooler 자식으로 넣어주는 setParent 를해주고싶었다.
 근데 이걸 각오브젝트들에게 OnDisable 에서 실행하는데 오브젝트의 Active 가 꺼져있을때 계층구조를 바꿀수가 없어서
 풀링할 오브젝트들이 상복받는 ObjectPoolObject 에 BackPool을 Invoke 로 실행해줬다 나중에 문제생기면 바꾸면 되겠지
+
+*Update 2024-02-16
+2-9 내용에서 Invoke 사용하니 초기셋업 시 오브젝트가 꺼지는걸 Soawnpool 이후에 해 오브젝트가 한번에 안켜져
+ObjectPoolOjbect 에 FirstSetUp 변수 추가
+FirstSetUp은 풀링오브젝트가 생성시에만 관리해주면됨
 */
 using System;
 using System.Collections.Generic;
@@ -114,13 +119,14 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
             CreateNewObject(objectName);
         }
     }
-    GameObject CreateNewObject(ObjectPool objectName)
+    void CreateNewObject(ObjectPool objectName)
     {
         var obj = Instantiate(Dic_NameToPreFab[objectName], transform);
         obj.name = objectName.ToString();
+        Debug.Log("4");
         obj.SetActive(false);
         ArrayObject(obj);
-        return obj;
+        Dic_NameToQueueGameObject[objectName].Enqueue(obj);
     }
 
     void ArrayObject(GameObject obj)
@@ -137,7 +143,7 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
                 isFind = transform;
             else if (isFind)
             {
-                obj.transform.SetSiblingIndex(i);
+                obj.transform.SetSiblingIndex(i); 
                 break;
             }
         }
@@ -169,19 +175,20 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
     {
         return Instance._SpawnFormPool(objectName, parent).GetComponent<T>();
     }
-    public static T _SpawnFormPool_Ui<T> (ObjectPool objectName,GameObject parent) where T : Component
-    {
-        return Instance._SpawnFormPool_Ui(objectName, parent).GetComponent<T>();
-    }
-    
 
+    #endregion
+
+    #region _SpawnPool
     GameObject _SpawnFormPool(ObjectPool objectName, Vector3 position, quaternion rotation)
     {
         if(!Dic_NameToQueueGameObject.ContainsKey(objectName))
             Debug.LogError("error - objectpooler"+objectName);
         GameObject go;
+        
         if (Dic_NameToQueueGameObject[objectName].Count <= 0)
-            go= CreateNewObject(objectName);
+        {
+            CreateNewObject(objectName);
+        }
 
         go = Dic_NameToQueueGameObject[objectName].Dequeue();
         go.transform.position = position;
@@ -193,32 +200,20 @@ public class ObjectPooler : SINGLETON<ObjectPooler,Ns_SINGLETONE.SINGLETONEType.
     {
         if(!Dic_NameToQueueGameObject.ContainsKey(objectName))
             Debug.LogError("error - objectpooler"+objectName);
+        
         GameObject go;
         if (Dic_NameToQueueGameObject[objectName].Count <= 0)
-            go= CreateNewObject(objectName);
-
+        {
+            CreateNewObject(objectName);
+        }
         go = Dic_NameToQueueGameObject[objectName].Dequeue();
         go.transform.position = parent.transform.position;
         go.transform.parent = parent.transform;
         go.SetActive(true);
         return go;
     }
-    GameObject _SpawnFormPool_Ui(ObjectPool objectName,GameObject parent)
-    {
-        if(!Dic_NameToQueueGameObject.ContainsKey(objectName))
-            Debug.LogError("error - objectpooler"+objectName);
-        GameObject go;
-        if (Dic_NameToQueueGameObject[objectName].Count <= 0)
-            go= CreateNewObject(objectName);
 
-        go = Dic_NameToQueueGameObject[objectName].Dequeue();
-        go.transform.position = parent.transform.position;
-        go.transform.SetParent(parent.transform);
-        go.SetActive(true);
-        return go;
-    }
     #endregion
-
     #region returnpool
 
     public static void ReturnToPool(GameObject obj)

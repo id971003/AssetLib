@@ -13,11 +13,10 @@ using UnityEngine;
 
 public abstract class ObjectPoolObject : MonoBehaviour
 {
-    [SerializeField] private Transform Instance;
-
+    private bool FirstSetUp;
     private void Awake()
     {
-        Instance = ObjectPooler.Instance.transform;
+        FirstSetUp = true;
     }
 
     public abstract void SetUp();
@@ -33,7 +32,14 @@ public abstract class ObjectPoolObject : MonoBehaviour
     }
     protected virtual void OnDisable()
     {
-        Invoke("BackPool",0);
+        if (FirstSetUp)
+        {
+            FirstSetUp = false;
+        }
+        else
+        {
+            Invoke("BackPool", 0);
+        }
     }
-
+    
 }
