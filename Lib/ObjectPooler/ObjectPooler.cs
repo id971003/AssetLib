@@ -24,6 +24,7 @@ ReturnTopool 을 할때 돌아온친구들을 Pooler 자식으로 넣어주는 s
 2-9 내용에서 Invoke 사용하니 초기셋업 시 오브젝트가 꺼지는걸 Soawnpool 이후에 해 오브젝트가 한번에 안켜져
 ObjectPoolOjbect 에 FirstSetUp 변수 추가
 FirstSetUp은 풀링오브젝트가 생성시에만 관리해주면됨
+SpawnPool중 Parent 를 지정하는 타입의 경우 Parent 의 Active 가 false 되면 다시 풀로 돌아오게 해놨다
 */
 using System;
 using System.Collections.Generic;
