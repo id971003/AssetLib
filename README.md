@@ -456,7 +456,24 @@ private void ProcessEnd_Succes(string message, string data)
 
 Csv 파일 로드해 class 화 시킴
 시트 첫줄로 맵핑해사용
- ***
+```
+public class TestData
+{
+    public int Level;
+    public String Name;
+}
+[Serializable]
+public class TestDataMap : ClassMap<GachaDataGameData>
+{
+    public GachaDataGameDataMap()
+    {
+Map(m => m.Level).Name("Level");
+Map(m => m.Name).Name("Name").Default("123");;
+
+    }
+}
+```
+ 
  # Utility [Update 2023-12-31]
  나머지 잡다한거 모아논거 static 클래스임
 ```
