@@ -16,10 +16,11 @@ update 12.14 내가만든 뭔가를 쓰는데 에셋이나 다른 라이브러�
   * SoundManager [Update 2023-12-14]  
   * ScenesManager [Update 2023-12-17]  
   * ObjectPooler [Update 2023-12-21]  
-  * DatasManager [Update 2023-12-27]  
+  * DatasManager [Update 2025-3-15]  
   * GoogleSheetManager  [Update 2023-12-30]
   * StorageManager  [Update 2024-01-20]  
-  * Utility [Update 2023-12-31]     
+  * Utility [Update 2023-12-31]
+  * CsvLoader [Update 2025-03-15]     
   
   
 ***
@@ -451,9 +452,30 @@ private void ProcessEnd_Succes(string message, string data)
         }
     }
 ```
+#  CsvReader[Update 20225-03-15]
+
+Csv 파일 로드해 class 화 시킴
+시트 첫줄로 맵핑해사용
  ***
  # Utility [Update 2023-12-31]
  나머지 잡다한거 모아논거 static 클래스임
+```
+public class TestData
+{
+    public int Level;
+    public String Name;
+}
+[Serializable]
+public class TestDataMap : ClassMap<GachaDataGameData>
+{
+    public GachaDataGameDataMap()
+    {
+Map(m => m.Level).Name("Level");
+Map(m => m.Name).Name("Name").Default("123");;
+
+    }
+}
+```
 
  * WaitForSceond  
  코루틴할때 waitforsecond 나 딜레이를 주는 경우가 많은데이거 미리 캐싱해서 이용한다. 미리 만들어 놓으면 new 를 덜 호출해 메모리적으로 안정적이라고한다.
