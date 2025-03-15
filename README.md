@@ -21,6 +21,8 @@ update 12.14 내가만든 뭔가를 쓰는데 에셋이나 다른 라이브러�
   * StorageManager  [Update 2024-01-20]  
   * Utility [Update 2023-12-31]
   * CsvLoader [Update 2025-03-15]     
+  * EditorBuild [Update 2025-03-16]     
+
   
   
 ***
@@ -473,6 +475,13 @@ Map(m => m.Name).Name("Name").Default("123");;
     }
 }
 ```
+
+#  EditorBuild[Update 20225-03-16]
+
+Editor 에서 ScriptingSymbol 변경하거나 빌드할때 씀
+플랫폼별로 쓸거 적어 놓긴했는데 세부 새팅은 그때그때 받아와서 쓰면됨
+
+
  
  # Utility [Update 2023-12-31]
  나머지 잡다한거 모아논거 static 클래스임
