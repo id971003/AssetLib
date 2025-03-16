@@ -278,4 +278,53 @@ public static class ListExt
         int index = list.IndexOf(item);
         RemoveBySwap(list, index);
     }
+
+    public static T GetRandom<T>(this List<T> list)
+    {
+        if (list == null || list.Count == 0)
+        {
+            throw new InvalidOperationException("Cannot get a random item from an empty or null list.");
+        }
+
+        int index = UnityEngine.Random.Range(0, list.Count);
+        return list[index];
+    }
+
+    public static int GetRandomIndex<T>(this List<T> list)
+    {
+        if (list.Count == 0)
+            return -1;
+
+        return UnityEngine.Random.Range(0, list.Count);
+    }
+
+    public static T SelectByWeight<T>(this IList<T> elements, int weightSum, Func<T, int> getElementWeight)
+    {
+        int index = elements.SelectIndexByWeight(weightSum, getElementWeight);
+        return elements[index];
+    }
+    public static int SelectIndexByWeight<T>(this IList<T> elements, int weightSum, Func<T, int> getElementWeight)
+    {
+        UnityEngine.Debug.Assert(weightSum > 0, "WeightSum should be a positive value");
+
+        int selectionIndex = 0;
+        int selectionWeightIndex = UnityEngine.Random.Range(0, weightSum);
+        int elementCount = elements.Count;
+
+        Debug.Assert(elementCount != 0, "Cannot perform selection on an empty collection");
+
+        int itemWeight = getElementWeight(elements[selectionIndex]);
+        while (selectionWeightIndex >= itemWeight)
+        {
+            selectionWeightIndex -= itemWeight;
+            selectionIndex++;
+
+            Debug.Assert(selectionIndex < elementCount, "Weighted selection exceeded indexable range. Is your weightSum correct?");
+
+            itemWeight = getElementWeight(elements[selectionIndex]);
+        }
+
+        return selectionIndex;
+    }
+
 }
