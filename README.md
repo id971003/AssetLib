@@ -477,9 +477,13 @@ Map(m => m.Name).Name("Name").Default("123");;
 ```
 
 #  EditorBuild[Update 20225-03-16]
-
 Editor 에서 ScriptingSymbol 변경하거나 빌드할때 씀
 플랫폼별로 쓸거 적어 놓긴했는데 세부 새팅은 그때그때 받아와서 쓰면됨
+
+#  ResolutionSet[Update 20225-03-29]
+Window 환경에서 화면 해상도 랑 화면상태 [FullScreen,Window .BorderlessWindow] 대응
+BorderlessWindow 의 경우 unity 기능말고 window api 접근해서 사용함
+
 
 
  
