@@ -29,18 +29,23 @@ public class ScreenResolution_Camera : MonoBehaviour
     [SerializeField] int setHeight; // 사용자 설정 높이
     [SerializeField] private Color LetterboxColor;
 
+
     private void Start()
     {
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        Screen.sleepTimeout = SleepTimeout.NeverSleep; //게임 정지안하게
         SetResolution(); // 초기에 게임 해상도 고정
     }
 
     /// <summary>
     /// 해상도 설정하는 함수
     /// </summary>
-    public void SetResolution()
+    public void SetResolution(Camera mainCamera=null)
     {
-
+        var TargetCamera = mainCamera;
+        if(TargetCamera == null)
+        {
+            TargetCamera = Camera.Main;
+        }
         int deviceWidth = Screen.width; // 기기 너비 저장
         int deviceHeight = Screen.height; // 기기 높이 저장
 
@@ -49,12 +54,12 @@ public class ScreenResolution_Camera : MonoBehaviour
         if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // 기기의 해상도 비가 더 큰 경우
         {
             float newWidth = ((float)setWidth / setHeight) / ((float)deviceWidth / deviceHeight); // 새로운 너비
-            Camera.main.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // 새로운 Rect 적용
+            TargetCamera.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // 새로운 Rect 적용
         }
         else // 게임의 해상도 비가 더 큰 경우
         {
             float newHeight = ((float)deviceWidth / deviceHeight) / ((float)setWidth / setHeight); // 새로운 높이
-            Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
+            TargetCamera.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
         }
     }
 
