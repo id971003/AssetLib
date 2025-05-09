@@ -16,7 +16,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using System.IO;
 
-#if UNITY_EDITOR
+
 namespace Kd
 {
     public static class EditorBuildMenu
@@ -75,8 +75,7 @@ namespace Kd
             // Live 빌드일 경우 IL2CPP 강제 적용
             if (addressableProfileName == "Live")
             {
-                //_scriptingImplementation = ScriptingImplementation.IL2CPP;
-                _scriptingImplementation = ScriptingImplementation.Mono2x;
+                _scriptingImplementation = ScriptingImplementation.IL2CPP;
             }
             else
             {
@@ -247,4 +246,4 @@ namespace Kd
         }
     }
 }
-#endif
+
