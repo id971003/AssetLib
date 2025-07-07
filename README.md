@@ -23,7 +23,6 @@ update 12.14 내가만든 뭔가를 쓰는데 에셋이나 다른 라이브러�
   * CsvLoader [Update 2025-03-15]     
   * EditorBuild [Update 2025-03-16]
   * ResolutionSet [Update 2025-03-29]
-  * QA
   * Qa_Canvas [Update 2025-05-09]
   * Qa_Inspecter [Update 2025-07-07]
 
