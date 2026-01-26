@@ -1,6 +1,34 @@
 /*
  * KD StateMachine System with Reserved State Transition
- * Reserved 방식 FSM(Finite State Machine) 구현
+ * Reserved 방식 FSM(Finite State Machine)
+ *  이렇게안하면 전환했을때 이전꺼의 update 랑 옮긴거 enter 순서가 보장이 안될수도있음
+ * Lock : 잠궈짐 
+ * 같은 상태 진입시 exit enter 다부름 
+ * 
+ * 
+ * ex 1)  등록
+ *     void Start()
+    {
+        // 상태머신 생성
+        m_StateMachine = new KD.StateMachine<Player>(this);
+
+        // 상태들 등록 (콜백 방식)
+        m_StateMachine.RegisterState(STATE_IDLE, OnIdleEnter, OnIdleUpdate, OnIdleExit);
+        m_StateMachine.RegisterState(STATE_MOVE, OnMoveEnter, OnMoveUpdate, OnMoveExit);
+        m_StateMachine.RegisterState(STATE_ATTACK, OnAttackEnter, OnAttackUpdate, OnAttackExit);
+        m_StateMachine.RegisterState(STATE_DEAD, OnDeadEnter, OnDeadUpdate, OnDeadExit);
+
+        // 첫 상태 시작
+        m_StateMachine.StartWithState(STATE_IDLE, "game_start");
+    }
+ * ex 2) 전환
+ *             m_StateMachine.TransitState(STATE_MOVE, false, moveDir, 5.0f); 
+ * 
+ * ex 3 ) 전달된 파라미터 사용
+ *  void OnAttackEnter(KD.IState<Player> _prev)
+    {
+    var parameters = m_StateMachine.GetStateParams();  // 클래스 멤버변수로 접근
+    }   
  */
 
 using System;
@@ -25,7 +53,6 @@ namespace KD
 
     /// <summary>
     /// Reserved 방식 상태 머신 클래스
-    /// 상태 전환을 예약 후 다음 프레임에 안전하게 처리
     /// </summary>
     /// <typeparam name="T">상태머신을 가지는 주체 타입</typeparam>
     public class StateMachine<T>
@@ -38,21 +65,13 @@ namespace KD
         private IState<T> m_ReservedNextState;
         private object[] m_ReservedParams;
 
+        // Lock 시스템
+        private List<int> m_LockStateList;
+
         public Action<StateMachine<T>, int, int> OnChangeState;
 
-        /// <summary>
-        /// 현재 상태 반환
-        /// </summary>
         public IState<T> GetCurrentState() => m_CurState;
-
-        /// <summary>
-        /// 예약된 상태 반환 (전환 대기중인 상태)
-        /// </summary>
         public IState<T> GetReservedState() => m_ReservedNextState;
-
-        /// <summary>
-        /// 현재 상태의 파라미터 반환
-        /// </summary>
         public object[] GetStateParams() => m_ReservedParams;
 
         public StateMachine(T _actor)
@@ -62,10 +81,32 @@ namespace KD
             m_CurState = null;
             m_ReservedNextState = null;
             m_ReservedParams = null;
+            m_LockStateList = new List<int>();
         }
 
         /// <summary>
-        /// 상태를 등록합니다
+        /// 상태를 콜백 함수로 등록 (간편한 방식)
+        /// </summary>
+        /// <param name="_stateId">상태 ID</param>
+        /// <param name="_onEnterCallback">Enter 콜백</param>
+        /// <param name="_onUpdateCallback">Update 콜백</param>
+        /// <param name="_onExitCallback">Exit 콜백</param>
+        /// <returns>등록 성공 여부</returns>
+        public bool RegisterState(int _stateId,
+                                  Action<IState<T>> _onEnterCallback,
+                                  Action<float> _onUpdateCallback,
+                                  Action<IState<T>> _onExitCallback)
+        {
+            NativeState<T> newState = new NativeState<T>();
+            newState.StateId = _stateId;
+            newState.StateMachine = this;
+            newState.SetCallbacks(_onEnterCallback, _onUpdateCallback, _onExitCallback);
+
+            return m_StateDict.TryAdd(_stateId, newState);
+        }
+
+        /// <summary>
+        /// 상태를 인스턴스로 등록 (클래스 방식)
         /// </summary>
         /// <param name="_stateId">상태 ID</param>
         /// <param name="_state">상태 인스턴스</param>
@@ -80,12 +121,13 @@ namespace KD
         }
 
         /// <summary>
-        /// 상태 전환을 예약합니다 (다음 프레임에 실제 전환됨)
+        /// 상태 전환을 예약합니다
         /// </summary>
         /// <param name="_toStateId">전환할 상태 ID</param>
+        /// <param name="_ignoreLock">Lock을 무시할지 여부 (기본: false)</param>
         /// <param name="_parameters">상태에 전달할 파라미터</param>
         /// <returns>예약 성공 여부</returns>
-        public bool TransitState(int _toStateId, params object[] _parameters)
+        public bool TransitState(int _toStateId, bool _ignoreLock = false, params object[] _parameters)
         {
             if (!m_StateDict.TryGetValue(_toStateId, out IState<T> nextState))
             {
@@ -93,7 +135,19 @@ namespace KD
                 return false;
             }
 
-            // 즉시 전환하지 않고 예약만 함
+            // Lock 체크 (ignoreLock이 true면 스킵)
+            if (!_ignoreLock)
+            {
+                foreach (var lockId in m_LockStateList)
+                {
+                    if (_toStateId == lockId)
+                    {
+                        Debug.LogWarning($"State {_toStateId} is locked! Cannot transit.");
+                        return false;
+                    }
+                }
+            }
+
             m_ReservedNextState = nextState;
             m_ReservedParams = _parameters;
 
@@ -102,12 +156,11 @@ namespace KD
 
         /// <summary>
         /// 상태 머신 업데이트 (매 프레임 호출 필수)
-        /// 예약된 상태 전환을 먼저 처리한 후 현재 상태 업데이트
         /// </summary>
         /// <param name="_deltaTime">델타 타임</param>
         public void RunUpdate(float _deltaTime)
         {
-            // 1. 예약된 상태 전환 먼저 처리
+            // 예약된 상태 전환 먼저 처리
             if (m_ReservedNextState != null)
             {
                 IState<T> nextState = m_ReservedNextState;
@@ -132,59 +185,74 @@ namespace KD
                 // Enter 새 상태
                 m_CurState.OnEnter(prevState);
 
-                // 파라미터 저장 (새 상태에서 접근 가능)
+                // 파라미터 저장
                 m_ReservedParams = stateParams;
             }
 
-            // 2. 현재 상태 업데이트 (안전한 상태에서 실행)
+            // 현재 상태 업데이트
             m_CurState?.OnUpdate(_deltaTime);
         }
 
         /// <summary>
-        /// 예약된 상태가 있는지 확인
+        /// 특정 상태에 Lock을 설정/해제합니다
         /// </summary>
-        /// <returns>예약된 상태 존재 여부</returns>
-        public bool HasReservedState()
+        /// <param name="_stateId">Lock할 상태 ID</param>
+        /// <param name="_isLock">Lock 여부 (true: Lock, false: Unlock)</param>
+        public void SetLockState(int _stateId, bool _isLock)
         {
-            return m_ReservedNextState != null;
+            if (_isLock)
+            {
+                if (!m_LockStateList.Contains(_stateId))
+                {
+                    m_LockStateList.Add(_stateId);
+                }
+            }
+            else
+            {
+                m_LockStateList.Remove(_stateId);
+            }
         }
 
         /// <summary>
-        /// 예약된 상태 전환을 취소
+        /// 모든 상태 Lock을 해제합니다
         /// </summary>
+        public void ClearAllLocks()
+        {
+            m_LockStateList.Clear();
+        }
+
+        /// <summary>
+        /// 특정 상태가 Lock되어 있는지 확인합니다
+        /// </summary>
+        /// <param name="_stateId">확인할 상태 ID</param>
+        /// <returns>Lock 여부</returns>
+        public bool IsStateLocked(int _stateId)
+        {
+            return m_LockStateList.Contains(_stateId);
+        }
+
+        /// <summary>
+        /// 현재 Lock된 상태들의 리스트를 반환합니다
+        /// </summary>
+        /// <returns>Lock된 상태 ID 리스트</returns>
+        public List<int> GetLockedStates()
+        {
+            return new List<int>(m_LockStateList);
+        }
+
+        public bool HasReservedState() => m_ReservedNextState != null;
+
         public void CancelReservedState()
         {
             m_ReservedNextState = null;
             m_ReservedParams = null;
         }
 
-        /// <summary>
-        /// 등록된 상태가 있는지 확인
-        /// </summary>
-        /// <param name="_stateId">확인할 상태 ID</param>
-        /// <returns>존재 여부</returns>
-        public bool HasState(int _stateId)
-        {
-            return m_StateDict.ContainsKey(_stateId);
-        }
+        public bool HasState(int _stateId) => m_StateDict.ContainsKey(_stateId);
 
-        /// <summary>
-        /// 현재 상태 ID 반환
-        /// </summary>
-        /// <returns>현재 상태 ID (-1: 상태없음)</returns>
-        public int GetCurrentStateId()
-        {
-            return m_CurState?.StateId ?? -1;
-        }
+        public int GetCurrentStateId() => m_CurState?.StateId ?? -1;
 
-        /// <summary>
-        /// 예약된 상태 ID 반환
-        /// </summary>
-        /// <returns>예약된 상태 ID (-1: 예약없음)</returns>
-        public int GetReservedStateId()
-        {
-            return m_ReservedNextState?.StateId ?? -1;
-        }
+        public int GetReservedStateId() => m_ReservedNextState?.StateId ?? -1;
 
         /// <summary>
         /// 첫 상태를 즉시 시작 (초기화용)
@@ -207,7 +275,6 @@ namespace KD
 
     /// <summary>
     /// 콜백 기반 상태 구현체
-    /// 별도 클래스 작성 없이 함수들로 상태 구현 가능
     /// </summary>
     /// <typeparam name="T">상태머신을 가지는 주체 타입</typeparam>
     public class NativeState<T> : IState<T>
@@ -219,12 +286,6 @@ namespace KD
         private Action<float> m_OnUpdateCallback;
         private Action<IState<T>> m_OnExitCallback;
 
-        /// <summary>
-        /// 상태 콜백들을 설정합니다
-        /// </summary>
-        /// <param name="_onEnter">Enter 콜백 (이전 상태 정보 전달)</param>
-        /// <param name="_onUpdate">Update 콜백 (델타타임 전달)</param>
-        /// <param name="_onExit">Exit 콜백 (다음 상태 정보 전달)</param>
         public void SetCallbacks(
             Action<IState<T>> _onEnter,
             Action<float> _onUpdate,
