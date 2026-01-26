@@ -1,5 +1,6 @@
 /*
- * KD StateMachine System with Reserved State Transition
+ *  MADE 7rzr 2024-11-06
+ * StateMachine System with Reserved State Transition
  * Reserved 방식 FSM(Finite State Machine)
  *  이렇게안하면 전환했을때 이전꺼의 update 랑 옮긴거 enter 순서가 보장이 안될수도있음
  * Lock : 잠궈짐 
